@@ -18,7 +18,7 @@
 #include <errno.h>
 
 #include "wham-2d.h"
-#define LINESIZE 256
+#define LINESIZE 100
 
 int get_numwindows(FILE *file)
 {
@@ -295,6 +295,75 @@ while (line != NULL)
 free(line);
 return(current_window);
 }
+
+// Read a mask file and build the array of masking rectangles
+int read_maskfile(FILE *file, struct mask *mask_array)
+{
+char *line;
+int numvals;
+int current_maskline = 0;
+double xmin, xmax, ymin, ymax;
+
+
+
+line = (char *) malloc(sizeof(char) * LINESIZE);
+if (!line)
+    {
+    printf("couldn't allocate space for line\n");
+    exit(-1);
+    } 
+
+rewind(file);
+line = fgets(line,LINESIZE,file);
+while (line != NULL)
+    {
+    if (is_metadata(line))
+        {
+        numvals = sscanf(line, "%lf %lf %lf %lf", &xmin, &xmax, &ymin, &ymax);
+        if (numvals < 4)
+            {
+            printf("Error processing mask file line:\n");
+            printf("%s", line);
+            printf("Only found %d values, need 4\n", numvals);
+            exit(-1);
+            }
+        mask_array[current_maskline].xmin = xmin;
+        mask_array[current_maskline].xmax = xmax;
+        mask_array[current_maskline].ymin = ymin;
+        mask_array[current_maskline].ymax = ymax;
+        current_maskline++;
+        }
+    }
+return current_maskline;
+}
+
+int build_mask(int num_masks, struct mask *mask_array, int **mask)
+{
+int i,j,k;
+double coor[2];
+
+for (i=0; i<NUM_BINSx; i++)
+    {
+    for (j=0; j<NUM_BINSy; j++)
+        {
+        mask[i][j] = 0;
+        calc_coor(i,j,coor);
+        for (k=0; k<num_masks; k++)
+            {
+            if ( (mask_array[k].xmin < coor[0]) &&
+                 (mask_array[k].xmax > coor[0]) &&
+                 (mask_array[k].ymin < coor[1]) &&
+                 (mask_array[k].ymax > coor[1]) )
+                {
+                mask[i][j] = 1;
+                break;
+                }
+
+            }
+        }
+    }
+}
+
 
 // Read a datafile, dump it into the global histogram
 // If the second argument, have_energy, is nonzero, this tells us we should 
