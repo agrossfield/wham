@@ -286,13 +286,14 @@ if (use_mask)
         }
     i = get_numwindows(MASKFILE); // this works for this format also
     printf("# mask file contains %d boxes\n", i);
-    mask_array = (struct mask *) malloc(i * sizeof(mask));
+    mask_array = (struct mask *) malloc(i * sizeof(struct mask));
     num_masks = read_maskfile(MASKFILE, mask_array);
     assert(i == num_masks);  // we should have read expected num of mask boxes
+    fclose(MASKFILE);
 
     // allocate memory to store the mask
     mask = (int **) malloc(sizeof(int *) * NUM_BINSx);
-    if (!unc)
+    if (!mask)
         {
         printf("couldn't allocate space for mask: %s\n", strerror(errno));
         exit(errno);
@@ -307,6 +308,9 @@ if (use_mask)
             exit(errno);
             }
         }
+
+    // build the mask
+    i = build_mask(num_masks, mask_array, mask);
     }
 
 i = get_numwindows(METAFILE);
@@ -315,7 +319,7 @@ printf("#Number of windows = %d\n", i);
 hist_group = make_hist_group(i);
 //printf("From hist_group: %d\n", hist_group->num_windows);
 
-i = read_metadata(METAFILE, hist_group);
+i = read_metadata(METAFILE, hist_group, use_mask, mask);
 assert(i == hist_group->num_windows);
 
 // allocate memory to store the final F values, for when we do MC

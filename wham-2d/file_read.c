@@ -73,13 +73,13 @@ return not_space;
 // histograms.
 // return the number of windows allocated
 
-int read_metadata(FILE *file, struct hist_group *hist_group)
+int read_metadata(FILE *file, struct hist_group *hist_group, 
+                  int use_mask, int **mask)
 {
 char *line;
 char filename[LINESIZE];
 int vals;
 double locx, locy, springx, springy, temp;
-double part;
 double sum;
 int num_points=0; 
 int current_window=0;
@@ -142,7 +142,7 @@ while (line != NULL)
                 exit(-1);
                 }
             // Read data into the global histogram
-            num_points = read_data(filename, have_temp);
+            num_points = read_data(filename, have_temp, use_mask, mask);
             // make sure we didn't screw up trying to read
             if (num_points < 0)
                 {
@@ -305,7 +305,6 @@ int current_maskline = 0;
 double xmin, xmax, ymin, ymax;
 
 
-
 line = (char *) malloc(sizeof(char) * LINESIZE);
 if (!line)
     {
@@ -332,21 +331,26 @@ while (line != NULL)
         mask_array[current_maskline].ymin = ymin;
         mask_array[current_maskline].ymax = ymax;
         current_maskline++;
+        //printf("%d\n", current_maskline);
         }
+    line = fgets(line,LINESIZE,file);
     }
-return current_maskline;
+//printf("%d\n", current_maskline);
+free(line);
+return(current_maskline);
 }
 
 int build_mask(int num_masks, struct mask *mask_array, int **mask)
 {
 int i,j,k;
 double coor[2];
+int num_masked = 0;
 
 for (i=0; i<NUM_BINSx; i++)
     {
     for (j=0; j<NUM_BINSy; j++)
         {
-        mask[i][j] = 0;
+        mask[i][j] = 1;
         calc_coor(i,j,coor);
         for (k=0; k<num_masks; k++)
             {
@@ -355,13 +359,16 @@ for (i=0; i<NUM_BINSx; i++)
                  (mask_array[k].ymin < coor[1]) &&
                  (mask_array[k].ymax > coor[1]) )
                 {
-                mask[i][j] = 1;
+                mask[i][j] = 0;
+                num_masked++;
+                //printf("%d %d %d\n", i,j,num_masked);
                 break;
                 }
 
             }
         }
     }
+return num_masked;
 }
 
 
@@ -373,7 +380,7 @@ for (i=0; i<NUM_BINSx; i++)
 // in the histogram otherwise
 //
 // clears HISTOGRAM as a side effect
-int read_data(char *filename, int have_energy)
+int read_data(char *filename, int have_energy, int use_mask, int **mask)
 {
 FILE *file;
 char *line;
@@ -424,15 +431,19 @@ while (line != NULL)
             {
             index_x = (int) ((value_x - HIST_MINx) / BIN_WIDTHx);
             index_y = (int) ((value_y - HIST_MINy) / BIN_WIDTHy);
-            if (have_energy)
+            if ( !(use_mask) ||
+                  (use_mask && (mask[index_x][index_y])) )
                 {
-                HISTOGRAM[index_x][index_y] += exp(-energy/kT);
+                if (have_energy)
+                    {
+                    HISTOGRAM[index_x][index_y] += exp(-energy/kT);
+                    }
+                else
+                    {
+                    HISTOGRAM[index_x][index_y] += 1.0e0;
+                    }
+                num_points++;
                 }
-            else
-                {
-                HISTOGRAM[index_x][index_y] += 1.0e0;
-                }
-            num_points++;
             }
         }
     line = fgets(line,LINESIZE,file);

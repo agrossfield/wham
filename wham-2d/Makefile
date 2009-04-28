@@ -5,9 +5,9 @@
 
 # Linux flags
 CC=gcc
-CFLAGS= -O2 -Wall -W
+#CFLAGS= -O2 -Wall -W
 #Debugging flags
-#CFLAGS= -g  -Wall -W
+CFLAGS= -g  -Wall -W
 LFLAGS= -lm
 
 # SGI

@@ -97,9 +97,10 @@ double ymax;
 // file_read.c
 int get_numwindows(FILE *file);
 int is_metadata(char *line);
-int read_metadata(FILE *file, struct hist_group *hist_group);
+int read_metadata(FILE *file, struct hist_group *hist_group, 
+                  int use_mask, int **mask);
 int read_maskfile(FILE *file, struct mask *mask_array);
-int read_data(char *filename, int have_energy);
+int read_data(char *filename, int have_energy, int use_mask, int **mask);
 int build_mask(int num_masks, struct mask *mask_array, int **mask);
 
 
