@@ -816,7 +816,7 @@ for (j=0; j<hist_group->num_windows;j++)
     hist_group->F[j] = -hist_group->kT[j] * log(hist_group->F[j]);
     }
 // probably unnecessary, but couldn't hurt
-for (j=1; j<hist_group->num_windows;j++)
+for (j=0; j<hist_group->num_windows;j++)
     {
     hist_group->F[j] -= hist_group->F[0];
     }
