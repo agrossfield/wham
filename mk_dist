@@ -1,0 +1,29 @@
+#!/bin/tcsh -f
+
+if ($#argv >= 1) then
+    set tag = "tags/$argv[1]"
+    shift
+else
+    set tag = "trunk"
+endif
+
+
+set dirs = "wham wham-2d nr doc make"
+
+echo "Checking out a clean copy of $tag"
+mkdir -p tmp/wham
+cd tmp/wham
+foreach d ($dirs)
+    echo "Checking out $d"
+    svn checkout file:///home/svn/subversion/software/wham/$tag/$d/
+end
+
+mv make/Makefile Makefile
+rm -rf make
+
+echo "Tarring"
+cd ../
+tar czf ../wham-dist.tgz --exclude '.svn*' wham 
+cd ../
+rm -rf tmp
+
