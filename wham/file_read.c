@@ -79,7 +79,6 @@ char *line;
 char filename[LINESIZE];
 int vals, mc_samples;
 double loc, spring, temp;
-double part;
 double sum;
 double correl_time;
 int num_points=0; 
