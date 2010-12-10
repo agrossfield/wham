@@ -59,7 +59,7 @@ double **prob, **final_prob;
 double **ave_p, **ave_p2, **unc;
 double *final_f;
 double *data;
-double sum, ratio;
+double sum;
 int iteration;
 int max_iteration = 100000;
 int numpad;
@@ -491,22 +491,10 @@ for (i=0; i < num_mc_runs; i++)
         num_used = num_x * num_y;
         mk_new_hist(hp->cum, data, num_used, hp->num_mc_samples, &idum);
 
-#if 0
-        // usually sum will = num_mc_samples, but not necessarily
-        // if this was a multitemperature run
-        sum = 0.0;
-        for (k=0; k < num_used; k++)
-            {
-            sum += data[k];
-            }
-        ratio = hist_group->partition[j]/sum;
-#endif
-
         for (k=0; k < num_used; k++)
             {
             xbin = k / num_y;
             ybin = k % num_y;
-            //hp->data[xbin][ybin] = data[k] * ratio;
             hp->data[xbin][ybin] = data[k];
             }
         }
