@@ -18,7 +18,7 @@
 #include <errno.h>
 
 #include "wham-2d.h"
-#define LINESIZE 100
+#define LINESIZE 1024
 
 int get_numwindows(FILE *file)
 {
