@@ -29,7 +29,7 @@ extern double PERIODx, PERIODy;     // flags to control periodic interval
 #define k_B 0.001982923700
 
 // Value inserted for the free energy of masked values
-#define MASKED 99999999999999.
+#define MASKED 9999999.
 
 // global (untrimmed) histogram, global to prevent reallocation
 extern double **HISTOGRAM;  

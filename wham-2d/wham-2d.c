@@ -339,6 +339,23 @@ for(i=0; i< NUM_BINSx; i++)
         }
     }
 
+// Write the masking value into the free energy array
+if (use_mask)
+    {
+    for(i=0; i< NUM_BINSx; i++)
+        {
+        for (j=0; j < NUM_BINSy; j++)
+            {
+            if (!mask[i][j])
+                {
+                free_ene[i][j] = MASKED;
+                }
+            }
+        }
+    }
+
+
+
 FREEFILE = fopen(freefile, "w");
 if (!FREEFILE)
     {
