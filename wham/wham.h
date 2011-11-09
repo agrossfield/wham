@@ -92,7 +92,7 @@ void clear_HISTOGRAM(void);
 void save_free(struct hist_group *h);
 int is_converged(struct hist_group *h);
 double average_diff(struct hist_group *h);
-void calc_free(double *free, double *prob, double kT);
+int calc_free(double *free, double *prob, double kT);
 double calc_bias(struct hist_group *h, int index, double coor);
 double calc_coor(int i);
 

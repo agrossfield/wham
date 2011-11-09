@@ -61,10 +61,10 @@ else
     return hist->data[index - hist->first];
     }
 // can't happen
-return (int) NULL;
+return 0.0;
 }
 
-int get_cumval(struct histogram *hist, int index)
+double get_cumval(struct histogram *hist, int index)
 {
 if (index < hist->first)
     {
@@ -203,28 +203,30 @@ return error;
 }
 
 
-// Calculate the free energy, setting the minimum value to 0
-void calc_free(double *free, double *prob, double kT)
+// Calculate the free energy, and returning the bin index at that point.
+int calc_free(double *free, double *prob, double kT)
 {
-int i;
+int i,bin_min;
 double offset;
 double min = 1e50;
 
+bin_min = 0;
 for (i=0; i<NUM_BINS; i++)
     {
     free[i] = -kT * log(prob[i]);
     if (free[i] < min) 
         {
         min = free[i];
+        bin_min = i;
         }
     }
-
 offset = min;
 for (i=0; i<NUM_BINS; i++)
     {
     free[i] -= offset;
     }
 
+return bin_min;
 }
 
 double calc_bias(struct hist_group *h, int index, double coor)

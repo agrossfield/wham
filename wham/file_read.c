@@ -3,10 +3,6 @@
  * Utility Code -- read metadata and data files
  *
  *
- * $Revision$
- * $Author: alan $
- * $Date: 2003/10/06 13:37:52 $
- *
  */
 
 #include <stdio.h>
