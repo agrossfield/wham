@@ -28,7 +28,7 @@
 // Boltzmann's constant in kcal/mol K
 #define k_B 0.001982923700
 
-#define COMMAND_LINE "Command line:  wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x Py[=0|pi|val] hist_min_y hist_max_y num_bins_y tol temperature numpad metadatafile freefile use_mask [num_MC_trials random_seed]\n"
+#define COMMAND_LINE "Command line:  wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x Py[=0|pi|val] hist_min_y hist_max_y num_bins_y tol temperature numpad metadatafile freefile use_mask\n"
 
 double HIST_MAXx,HIST_MINx,BIN_WIDTHx;
 double HIST_MAXy,HIST_MINy,BIN_WIDTHy;
@@ -44,31 +44,25 @@ int main(int argc, char *argv[])
 /* moved to global
 double kT; // temperature
 */
-int i,j,k,xbin,ybin,num_x,num_y;
+int i,j;
 int first;
 int have_energy;
 char *freefile;
 FILE *METAFILE, *FREEFILE;
 struct hist_group *hist_group;
-struct histogram  *hp;
 double coor[2];
 double error;
 double **free_ene;
 double **prob, **final_prob;
-double **ave_p, **ave_p2, **unc;
 double *final_f;
-double *data;
 double sum;
 int iteration;
 int max_iteration = 100000;
 int numpad;
-int num_used;
-int num_mc_runs;
 int **mask;
-long idum;
 int use_mask;
 
-if ((argc != 15) && (argc != 17))
+if (argc != 15)
     {
     printf( COMMAND_LINE );
     exit(-1);
@@ -127,22 +121,6 @@ if (!freefile)
     }
 
 use_mask = atoi(argv[14]);
-
-if (argc == 17)
-    {
-    num_mc_runs = atoi(argv[15]);
-    idum = atol(argv[16]);
-    if (idum > 0)
-        {
-        idum = -idum;
-        }
-    // initialize the random number generator
-    ran2(&idum);
-    }
-else
-    {
-    num_mc_runs = 0;
-    }
 
 HISTOGRAM = (double **) malloc(sizeof(double *) * NUM_BINSx);
 if (!HISTOGRAM)
@@ -207,57 +185,6 @@ for (i=0; i<NUM_BINSx; i++)
     if (!free_ene[i])
         {
         printf("couldn't allocate space for free_ene[%d]: %s\n", 
-                i,strerror(errno));
-        exit(errno);
-        }
-    }
-
-ave_p = (double **) malloc(sizeof(double *) * NUM_BINSx);
-if (!ave_p)
-    {
-    printf("couldn't allocate space for ave_p: %s\n", strerror(errno));
-    exit(errno);
-    }
-for (i=0; i<NUM_BINSx; i++)
-    {
-    ave_p[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
-    if (!ave_p[i])
-        {
-        printf("couldn't allocate space for ave_p[%d]: %s\n", 
-                i,strerror(errno));
-        exit(errno);
-        }
-    }
-
-ave_p2 = (double **) malloc(sizeof(double *) * NUM_BINSx);
-if (!ave_p2)
-    {
-    printf("couldn't allocate space for ave_p2: %s\n", strerror(errno));
-    exit(errno);
-    }
-for (i=0; i<NUM_BINSx; i++)
-    {
-    ave_p2[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
-    if (!ave_p2[i])
-        {
-        printf("couldn't allocate space for ave_p2[%d]: %s\n", 
-                i,strerror(errno));
-        exit(errno);
-        }
-    }
-
-unc = (double **) malloc(sizeof(double *) * NUM_BINSx);
-if (!unc)
-    {
-    printf("couldn't allocate space for unc: %s\n", strerror(errno));
-    exit(errno);
-    }
-for (i=0; i<NUM_BINSx; i++)
-    {
-    unc[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
-    if (!unc[i])
-        {
-        printf("couldn't allocate space for unc[%d]: %s\n", 
                 i,strerror(errno));
         exit(errno);
         }
@@ -412,135 +339,6 @@ for(i=0; i< NUM_BINSx; i++)
         }
     }
 
-// Do the requested number of Monte Carlo bootstrap error analysis runs
-
-if (num_mc_runs <= 0)
-    {
-    printf("# No MC error analysis requested\n");
-    }
-
-// initialize the averaging arrays
-for(i=0;i < NUM_BINSx; i++)
-    {
-    for (j=0; j < NUM_BINSy; j++)
-        {
-        ave_p[i][j] = 0.0;
-        ave_p2[i][j] = 0.0;
-        unc[i][j] = 0.0;
-        }
-    }
-
-// for now, allocate a single large enough data array
-data = (double *) malloc(sizeof(double) * NUM_BINSx * NUM_BINSy);
-if (!data)
-    {
-    printf("#Error allocating memory for error analyis: %s\n",
-            strerror(errno));
-    }
-
-for (i=0; i < num_mc_runs; i++)
-    {
-    // pick a set of fake data sets
-    // In 1D this is simple -- we use the cumulative distribution computed
-    // from the histogram to draw random numbers according to the probability
-    // distribution estimated by that histogram.
-    // There is no direct 2D equivalent, in that the cumulant isn't uniquely
-    // defined.  However, I don't think the definition of the cumulative 
-    // distribution matters, as long as it's used consistently.  We picked 
-    // a particular way of flattening the 2D distribution hp->data (looping 
-    // first over x, then y) when we created both in file_read.c, and we'll
-    // continue to use that convention here.  So, we use a temporary 1D array 
-    // data to hold the linear new data set generated from cum, then rewraps
-    // it into 2D form in hp->data
-    for (j=0; j < hist_group->num_windows; j++)
-        {
-        //hist_group->F_old[j] = final_f[j];
-        //hist_group->F[j] = final_f[j];
-        hist_group->F_old[j] = 0.0;
-        hist_group->F[j] = 0.0;
-        hp = &hist_group->hists[j];
-        num_x = hp->last_x - hp->first_x + 1;
-        num_y = hp->last_y - hp->first_y + 1;
-        num_used = num_x * num_y;
-        mk_new_hist(hp->cum, data, num_used, hp->num_mc_samples, &idum);
-
-        for (k=0; k < num_used; k++)
-            {
-            xbin = k / num_y;
-            ybin = k % num_y;
-            hp->data[xbin][ybin] = data[k];
-            }
-        }
-
-    // perform WHAM iterations on the fake data sets
-    iteration = 0;
-    first = 1;
-    while (! is_converged(hist_group) || first)
-        {
-        first = 0;
-        save_free(hist_group);
-        wham_iteration(hist_group, prob, have_energy, use_mask, mask);
-        iteration++;
-        if (iteration >= max_iteration)
-            {
-            printf("Too many iterations during MC trial %d: %d\n",
-                    i, iteration);
-            break;
-            }
-        }
-    printf("# MC trial %d: %d iterations\n", i, iteration);
-    
-    // accumulate the average and stdev of the resulting probabilities
-    sum = 0.0;
-    for (j=0; j< NUM_BINSx; j++)
-        {
-        for (k=0; k < NUM_BINSy; k++)
-            {
-            sum += prob[j][k];
-            }
-        }
-
-    for (j=0; j< NUM_BINSx; j++)
-        {
-        for (k=0; k < NUM_BINSy; k++)
-            {
-            prob[j][k] /= sum;
-            ave_p[j][k] += prob[j][k];
-            ave_p2[j][k] += prob[j][k]*prob[j][k];
-            //printf("%d\t%d\t%f\n", j,k,prob[j][k]);
-            }
-        //printf("\n");
-        }
-    }
-
-// normalize the averaged probabilities
-if (num_mc_runs > 0)
-    {
-    for (i=0; i< NUM_BINSx; i++)
-        {
-        for (j=0; j < NUM_BINSy; j++)
-            {
-            ave_p2[i][j]  /= (double)num_mc_runs;
-            ave_p[i][j]  /= (double)num_mc_runs;
-            ave_p2[i][j] = sqrt(ave_p2[i][j] - ave_p[i][j]*ave_p[i][j]);
-            }
-        }
-/*
- * I need to transform the uncertainty in probability into the uncertainty
- * in kt *log(p)
- *
- * dev (log(x)) = dev(x) / x
- */
-    for (i=0; i< NUM_BINSx; i++)
-        {
-        for (j=0; j < NUM_BINSy; j++)
-            {
-            unc[i][j] = kT * ave_p2[i][j] / final_prob[i][j];
-            }
-        }
-    }
-
-
 FREEFILE = fopen(freefile, "w");
 if (!FREEFILE)
     {
@@ -551,9 +349,8 @@ if (!FREEFILE)
         for (j=0; j< NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            printf("%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                                      free_ene[i][j], unc[i][j],
-                                      final_prob[i][j], ave_p2[i][j]);
+            printf("%f\t%f\t%f\t%f\n", coor[0], coor[1], 
+                                       free_ene[i][j], final_prob[i][j]);
             }
         }
     exit(errno);
@@ -561,7 +358,7 @@ if (!FREEFILE)
 else
     {
     // TODO: Add header like in the 1D case
-    fprintf(FREEFILE, "#X\t\tY\t\tFree\t\t+/-\t\tPro\t\t+/-\n");
+    fprintf(FREEFILE, "#X\t\tY\t\tFree\t\tPro\n");
     // leading padded values in x 
     for (i=-numpad; i<0; i++)
         {
@@ -569,27 +366,25 @@ else
         for (j=-numpad; j<0; j++)
             {
             calc_coor(i,j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
                     free_ene[NUM_BINSx+i][NUM_BINSy+j], 
-                    unc[NUM_BINSx+i][NUM_BINSy+j], 
-                    final_prob[NUM_BINSx+i][NUM_BINSy+j],
-                    ave_p2[NUM_BINSx+i][NUM_BINSy+j]);
+                    final_prob[NUM_BINSx+i][NUM_BINSy+j]);
             }
         // center values in y
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                           free_ene[NUM_BINSx+i][j], unc[NUM_BINSx+i][j],
-                           final_prob[NUM_BINSx+i][j], ave_p2[NUM_BINSx+i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
+                           free_ene[NUM_BINSx+i][j], 
+                           final_prob[NUM_BINSx+i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
             calc_coor(i,NUM_BINSy+j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                           free_ene[NUM_BINSx+i][j], unc[NUM_BINSx+i][j],
-                           final_prob[NUM_BINSx+i][j], ave_p2[NUM_BINSx+i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                           free_ene[NUM_BINSx+i][j], 
+                           final_prob[NUM_BINSx+i][j]);
             }
         fprintf(FREEFILE, "\n");
         }
@@ -600,25 +395,25 @@ else
         for (j=-numpad; j<0; j++)
             {
             calc_coor(i,j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                           free_ene[i][NUM_BINSy+j], unc[i][NUM_BINSy+j],
-                           final_prob[i][NUM_BINSy+j], ave_p2[i][NUM_BINSy+j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                           free_ene[i][NUM_BINSy+j], 
+                           final_prob[i][NUM_BINSy+j]);
             }
         // center values in y
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                             free_ene[i][j], unc[i][j],
-                             final_prob[i][j], ave_p2[i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
+                             free_ene[i][j], 
+                             final_prob[i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
             calc_coor(i,NUM_BINSy+j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                             free_ene[i][j], unc[i][j],
-                             final_prob[i][j], ave_p2[i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                             free_ene[i][j],
+                             final_prob[i][j]);
             }
         fprintf(FREEFILE, "\n");
         }
@@ -629,25 +424,25 @@ else
         for (j=-numpad; j<0; j++)
             {
             calc_coor(NUM_BINSx+i,j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                             free_ene[i][NUM_BINSy+j], unc[i][NUM_BINSy+j],
-                             final_prob[i][NUM_BINSy+j], ave_p2[i][NUM_BINSy+j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                             free_ene[i][NUM_BINSy+j],
+                             final_prob[i][NUM_BINSy+j]);
             }
         // center values in y
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(NUM_BINSx+i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                             free_ene[i][j], unc[i][j],
-                             final_prob[i][j], ave_p2[i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
+                             free_ene[i][j], 
+                             final_prob[i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
             calc_coor(NUM_BINSx+i,NUM_BINSy+j,coor); 
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                             free_ene[i][j], unc[i][j],
-                             final_prob[i][j], ave_p2[i][j]);
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                             free_ene[i][j], 
+                             final_prob[i][j]);
             }
         fprintf(FREEFILE, "\n");
         }
