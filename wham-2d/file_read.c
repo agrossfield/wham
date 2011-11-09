@@ -296,6 +296,7 @@ free(line);
 return(current_window);
 }
 
+/*
 // Read a mask file and build the array of masking rectangles
 int read_maskfile(FILE *file, struct mask *mask_array)
 {
@@ -339,38 +340,7 @@ while (line != NULL)
 free(line);
 return(current_maskline);
 }
-
-int build_mask(int num_masks, struct mask *mask_array, int **mask)
-{
-int i,j,k;
-double coor[2];
-int num_masked = 0;
-
-for (i=0; i<NUM_BINSx; i++)
-    {
-    for (j=0; j<NUM_BINSy; j++)
-        {
-        mask[i][j] = 1;
-        calc_coor(i,j,coor);
-        for (k=0; k<num_masks; k++)
-            {
-            if ( (mask_array[k].xmin < coor[0]) &&
-                 (mask_array[k].xmax > coor[0]) &&
-                 (mask_array[k].ymin < coor[1]) &&
-                 (mask_array[k].ymax > coor[1]) )
-                {
-                mask[i][j] = 0;
-                num_masked++;
-                //printf("%d %d %d\n", i,j,num_masked);
-                break;
-                }
-
-            }
-        }
-    }
-return num_masked;
-}
-
+*/
 
 // Read a datafile, dump it into the global histogram
 // If the second argument, have_energy, is nonzero, this tells us we should 
@@ -431,18 +401,18 @@ while (line != NULL)
             {
             index_x = (int) ((value_x - HIST_MINx) / BIN_WIDTHx);
             index_y = (int) ((value_y - HIST_MINy) / BIN_WIDTHy);
-            if ( !(use_mask) ||
-                  (use_mask && (mask[index_x][index_y])) )
+            if (have_energy)
                 {
-                if (have_energy)
-                    {
-                    HISTOGRAM[index_x][index_y] += exp(-energy/kT);
-                    }
-                else
-                    {
-                    HISTOGRAM[index_x][index_y] += 1.0e0;
-                    }
-                num_points++;
+                HISTOGRAM[index_x][index_y] += exp(-energy/kT);
+                }
+            else
+                {
+                HISTOGRAM[index_x][index_y] += 1.0e0;
+                }
+            num_points++;
+            if (use_mask)
+                {
+                mask[index_x][index_y] = 1;
                 }
             }
         }

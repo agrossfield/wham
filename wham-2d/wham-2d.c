@@ -28,7 +28,7 @@
 // Boltzmann's constant in kcal/mol K
 #define k_B 0.001982923700
 
-#define COMMAND_LINE "Command line:  wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x Py[=0|pi|val] hist_min_y hist_max_y num_bins_y tol temperature numpad metadatafile freefile use_mask maskfile [num_MC_trials random_seed]\n"
+#define COMMAND_LINE "Command line:  wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x Py[=0|pi|val] hist_min_y hist_max_y num_bins_y tol temperature numpad metadatafile freefile use_mask [num_MC_trials random_seed]\n"
 
 double HIST_MAXx,HIST_MINx,BIN_WIDTHx;
 double HIST_MAXy,HIST_MINy,BIN_WIDTHy;
@@ -48,8 +48,7 @@ int i,j,k,xbin,ybin,num_x,num_y;
 int first;
 int have_energy;
 char *freefile;
-char *maskfile;
-FILE *METAFILE, *FREEFILE, *MASKFILE; 
+FILE *METAFILE, *FREEFILE;
 struct hist_group *hist_group;
 struct histogram  *hp;
 double coor[2];
@@ -63,15 +62,13 @@ double sum;
 int iteration;
 int max_iteration = 100000;
 int numpad;
-int num_used, max_used;
+int num_used;
 int num_mc_runs;
 int **mask;
 long idum;
 int use_mask;
-int num_masks;
-struct mask *mask_array;
 
-if ((argc != 16) && (argc != 18))
+if ((argc != 15) && (argc != 17))
     {
     printf( COMMAND_LINE );
     exit(-1);
@@ -130,18 +127,11 @@ if (!freefile)
     }
 
 use_mask = atoi(argv[14]);
-if (use_mask)
-    {
-    i = strlen(argv[15]);
-    maskfile = (char *) malloc(i*sizeof(char));
-    maskfile = argv[15];
-    printf("%s\n", maskfile);
-    }
 
-if (argc == 18)
+if (argc == 17)
     {
-    num_mc_runs = atoi(argv[16]);
-    idum = atol(argv[17]);
+    num_mc_runs = atoi(argv[15]);
+    idum = atol(argv[16]);
     if (idum > 0)
         {
         idum = -idum;
@@ -273,24 +263,9 @@ for (i=0; i<NUM_BINSx; i++)
         }
     }
 
-// read the mask file
+// allocate the mask
 if (use_mask)
     {
-    printf("# Using mask file %s\n", maskfile);
-    MASKFILE = fopen(maskfile, "r");
-    if (!MASKFILE)
-        {
-        printf("couldn't open mask file %s: %s\n", maskfile, strerror(errno));
-        printf("exiting...\n");
-        exit(errno);
-        }
-    i = get_numwindows(MASKFILE); // this works for this format also
-    printf("# mask file contains %d boxes\n", i);
-    mask_array = (struct mask *) malloc(i * sizeof(struct mask));
-    num_masks = read_maskfile(MASKFILE, mask_array);
-    assert(i == num_masks);  // we should have read expected num of mask boxes
-    fclose(MASKFILE);
-
     // allocate memory to store the mask
     mask = (int **) malloc(sizeof(int *) * NUM_BINSx);
     if (!mask)
@@ -300,7 +275,9 @@ if (use_mask)
         }
     for (i=0; i<NUM_BINSx; i++)
         {
-        mask[i] = (int *) malloc(sizeof(int) * NUM_BINSy);
+        // Using calloc to ensure that the array is initialized as all zeros
+        //mask[i] = (int *) malloc(sizeof(int) * NUM_BINSy);
+        mask[i] = (int *) calloc(NUM_BINSy, sizeof(int));
         if (!mask[i])
             {
             printf("couldn't allocate space for mask[%d]: %s\n", 
@@ -308,9 +285,6 @@ if (use_mask)
             exit(errno);
             }
         }
-
-    // build the mask
-    i = build_mask(num_masks, mask_array, mask);
     }
 
 i = get_numwindows(METAFILE);
@@ -456,7 +430,6 @@ for(i=0;i < NUM_BINSx; i++)
         }
     }
 
-max_used = 0;
 // for now, allocate a single large enough data array
 data = (double *) malloc(sizeof(double) * NUM_BINSx * NUM_BINSy);
 if (!data)
