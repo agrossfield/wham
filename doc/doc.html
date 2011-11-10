@@ -85,6 +85,15 @@ further generalize it, so that any bin with fewer than N points is excluded,
 but I haven't done that yet.
 
 <div class="p"><!----></div>
+There's one other trivial but often requested feature in version 2.0.6: if
+you prefer to work in SI units, I've made it easier to switch energy units 
+from kcal to kJ (the units of your reaction coordinate are, as always, up to
+you).  It's a compile-time choice, but I figure that's fine because very few
+people switch units constantly.  The switch is easy - before you build the
+code, edit <tt>wham/wham.h</tt> and <tt>wham-2d/wham-2d.h</tt> and change which
+version of the constant <tt>k_B</tt> is defined.
+
+<div class="p"><!----></div>
  <h2><a name="tth_sEc3">
 3</a>&nbsp;&nbsp;New in release 2.0.4 and 2.0.5</h2>
 
@@ -122,6 +131,25 @@ of the code changes that went into this release.
 <div class="p"><!----></div>
 Untarring wham.tgz will create a directory wham/, which in turn contains
 several directories (wham/ wham-2d/ doc/ nr/).   
+
+<div class="p"><!----></div>
+Before you build the code, you need to choose your units for energy.  If you
+want kcal/mol, do nothing.  If you prefer to work in kJ, you need to edit
+2 files, <tt>wham/wham.h</tt> and <tt>wham-2d/wham-2d.h</tt>.  In each case, near the
+top of the file you'll see a pair of lines that look like 
+
+<div class="p"><!----></div>
+
+<pre>
+#define&nbsp;k_B&nbsp;0.001982923700&nbsp;//&nbsp;Boltzmann's&nbsp;constant&nbsp;in&nbsp;kcal/mol&nbsp;K
+//#define&nbsp;k_B&nbsp;&nbsp;0.0083144621&nbsp;//&nbsp;Boltzmann's&nbsp;constant&nbsp;kJ/mol-K
+
+</pre>
+
+<div class="p"><!----></div>
+To get kJ, you simply remove the "//" from the second line and put it
+before the first line, and save the file.  In principle, you can do just wham
+or just wham-2d, but I recommend against it for your own sanity.  
 
 <div class="p"><!----></div>
 To build the standard 1-D wham code on a machine which has gcc, you should
@@ -863,5 +891,5 @@ additional umbrella-sampled trajectory.
 T<sub><font size="-1">E</font></sub>X
 by <a href="http://hutchinson.belmont.ma.us/tth/">
 T<sub><font size="-1">T</font></sub>Hgold</a>,
-version 4.00.<br />On 10 Nov 2011, 15:05.</small>
+version 4.00.<br />On 10 Nov 2011, 16:44.</small>
 </html>
