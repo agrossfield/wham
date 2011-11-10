@@ -20,8 +20,8 @@ extern double PERIOD;
 #define DEGREES   360.0
 #define RADIANS   6.28318530717959
 
-// Boltzmann's constant in kcal/mol K
-#define k_B 0.001982923700
+#define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
+//#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
 
 
 // global (untrimmed) histogram, global to prevent reallocation
