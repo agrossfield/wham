@@ -371,7 +371,7 @@ discussion of error estimation.
 wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x  \
         Py[=0|pi|val] hist_min_y hist_max_y num_bins_y  \
         tol temperature numpad metadatafile freefile \ 
-        [num_MC_trials random_seed]
+        use_mask
 \end{verbatim}
 
 The command line arguments largely have the same meaning as they do for the
@@ -390,8 +390,9 @@ hist\_max, and num\_bins do in the 1 dimensional program.
 Py, hist\_min\_y, etc., behave the same as Px, hist\_min\_x, etc., except they
 control the second coordinate of the PMF.
 
-The remaining parameters have the same meaning as in the 1 dimensional wham
-program.
+use\_mask expects an integer value, and if its values is non-zero turns on
+the automasking feature, which causes bins for which there is no sample data
+to be excluded from the wham calculation.
 
 \subsubsection{File formats}
 
