@@ -485,7 +485,7 @@ discussion of error estimation.
 wham-2d&nbsp;Px[=0|pi|val]&nbsp;hist_min_x&nbsp;hist_max_x&nbsp;num_bins_x&nbsp;&nbsp;\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Py[=0|pi|val]&nbsp;hist_min_y&nbsp;hist_max_y&nbsp;num_bins_y&nbsp;&nbsp;\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tol&nbsp;temperature&nbsp;numpad&nbsp;metadatafile&nbsp;freefile&nbsp;\&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[num_MC_trials&nbsp;random_seed]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;use_mask
 
 </pre>
 
@@ -511,8 +511,9 @@ Py, hist_min_y, etc., behave the same as Px, hist_min_x, etc., except they
 control the second coordinate of the PMF.
 
 <div class="p"><!----></div>
-The remaining parameters have the same meaning as in the 1 dimensional wham
-program.
+use_mask expects an integer value, and if its values is non-zero turns on
+the automasking feature, which causes bins for which there is no sample data
+to be excluded from the wham calculation.
 
 <div class="p"><!----></div>
       <h4><a name="tth_sEc5.2.2">
@@ -891,5 +892,5 @@ additional umbrella-sampled trajectory.
 T<sub><font size="-1">E</font></sub>X
 by <a href="http://hutchinson.belmont.ma.us/tth/">
 T<sub><font size="-1">T</font></sub>Hgold</a>,
-version 4.00.<br />On 10 Nov 2011, 16:44.</small>
+version 4.00.<br />On 22 Dec 2011, 14:39.</small>
 </html>
