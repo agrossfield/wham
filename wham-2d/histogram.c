@@ -95,7 +95,7 @@ else
     return hist->data[i - hist->first_x][j - hist->first_y];
     }
 // can't happen
-return (int) NULL;
+return 0.0;
 }
 
 
