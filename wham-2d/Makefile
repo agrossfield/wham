@@ -27,7 +27,7 @@ SRCS=wham-2d.c file_read.c histogram.c $(NR)/ran2.c $(NR)/locate.c ../wham/boots
 OBJS=wham-2d.o file_read.o histogram.o $(NR)/ran2.o $(NR)/locate.o ../wham/bootstrap.o
 
 wham-2d: $(OBJS) 
-	$(CC) $(CFLAGS) $(LFLAGS) -o wham-2d $(OBJS)
+	$(CC) $(CFLAGS) -o wham-2d $(OBJS) $(LFLAGS)
 
 depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
