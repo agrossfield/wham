@@ -25,9 +25,6 @@
 
 #include "wham-2d.h"
 
-// Boltzmann's constant in kcal/mol K
-#define k_B 0.001982923700
-
 #define COMMAND_LINE "Command line:  wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x Py[=0|pi|val] hist_min_y hist_max_y num_bins_y tol temperature numpad metadatafile freefile use_mask\n"
 
 double HIST_MAXx,HIST_MINx,BIN_WIDTHx;
