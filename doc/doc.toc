@@ -1,17 +1,18 @@
 \contentsline {section}{\numberline {1}Introduction}{2}{section.1}
-\contentsline {section}{\numberline {2}New in release 2.0.6}{2}{section.2}
-\contentsline {section}{\numberline {3}New in release 2.0.4 and 2.0.5}{3}{section.3}
-\contentsline {section}{\numberline {4}Installation}{4}{section.4}
-\contentsline {section}{\numberline {5}Command line arguments and file formats}{5}{section.5}
-\contentsline {subsection}{\numberline {5.1}wham}{5}{subsection.5.1}
-\contentsline {subsubsection}{\numberline {5.1.1}Command line arguments for WHAM}{5}{subsubsection.5.1.1}
-\contentsline {subsubsection}{\numberline {5.1.2}File formats}{6}{subsubsection.5.1.2}
-\contentsline {subsubsection}{\numberline {5.1.3}Output}{7}{subsubsection.5.1.3}
-\contentsline {subsection}{\numberline {5.2}wham-2d}{9}{subsection.5.2}
-\contentsline {subsubsection}{\numberline {5.2.1}Command line arguments}{9}{subsubsection.5.2.1}
-\contentsline {subsubsection}{\numberline {5.2.2}File formats}{10}{subsubsection.5.2.2}
-\contentsline {subsubsection}{\numberline {5.2.3}Output}{11}{subsubsection.5.2.3}
-\contentsline {section}{\numberline {6}Discussion}{12}{section.6}
-\contentsline {subsection}{\numberline {6.1}Periodicity}{12}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Monte Carlo Bootstrap Error Analysis}{12}{subsection.6.2}
-\contentsline {subsection}{\numberline {6.3}Using the code for replica exchange simulations}{15}{subsection.6.3}
+\contentsline {section}{\numberline {2}New in release 2.0.7}{2}{section.2}
+\contentsline {section}{\numberline {3}New in release 2.0.6}{2}{section.3}
+\contentsline {section}{\numberline {4}New in release 2.0.4 and 2.0.5}{3}{section.4}
+\contentsline {section}{\numberline {5}Installation}{4}{section.5}
+\contentsline {section}{\numberline {6}Command line arguments and file formats}{5}{section.6}
+\contentsline {subsection}{\numberline {6.1}wham}{5}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Command line arguments for WHAM}{5}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}File formats}{6}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Output}{7}{subsubsection.6.1.3}
+\contentsline {subsection}{\numberline {6.2}wham-2d}{9}{subsection.6.2}
+\contentsline {subsubsection}{\numberline {6.2.1}Command line arguments}{9}{subsubsection.6.2.1}
+\contentsline {subsubsection}{\numberline {6.2.2}File formats}{10}{subsubsection.6.2.2}
+\contentsline {subsubsection}{\numberline {6.2.3}Output}{11}{subsubsection.6.2.3}
+\contentsline {section}{\numberline {7}Discussion}{12}{section.7}
+\contentsline {subsection}{\numberline {7.1}Periodicity}{12}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Monte Carlo Bootstrap Error Analysis}{12}{subsection.7.2}
+\contentsline {subsection}{\numberline {7.3}Using the code for replica exchange simulations}{15}{subsection.7.3}
