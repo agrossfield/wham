@@ -237,7 +237,7 @@ assert(i == hist_group->num_windows);
 // allocate memory to store the final F values, for when we do MC
 // bootstrap error analysis
 tempF = (double *) malloc(sizeof(double )*hist_group->num_windows);
-bias = (double ***) malloc(sizeof(double *) * NUM_BINSx);
+bias = (double ***) malloc(sizeof(double **) * NUM_BINSx);
 if (!bias)
     {
     printf("couldn't allocate space for bias\n");
@@ -245,13 +245,13 @@ if (!bias)
     }
 for (i=0; i<NUM_BINSx; i++)
     {
-    bias[i] = (double **) malloc(sizeof(double) * NUM_BINSy);
+    bias[i] = (double **) malloc(sizeof(double *) * NUM_BINSy);
     if (!bias[i])
         {
         printf("couldn't allocate space for bias[i]\n");
         exit(errno);
         }
-    for (k=0; k<hist_group->num_windows; k++)
+    for (k=0; k<NUM_BINSy; k++)
         {
         bias[i][k] = (double *) malloc(sizeof(double) * hist_group->num_windows);
         if (!bias[i][k])
