@@ -6,7 +6,7 @@
 \begin{center}
 \begin{LARGE}
 {\bf An implementation of WHAM: the Weighted Histogram Analysis Method} \\
-{\bf Version 2.0.8} \\
+{\bf Version 2.0.9} \\
 \vspace*{0.5in}
 {\bf Alan Grossfield} \\
 \end{LARGE}
@@ -49,6 +49,13 @@ XXXX
 would be nice, although again I don't insist upon it.
 
 Suggestions and patches are welcome.  
+
+\section{New in release 2.0.9}
+
+The is a bug-fix release; there was a memory allocation error in wham-2d
+that caused a segfault if the number of bins in the 2nd dimension was
+greater than the number of windows.  Caught by Bastien Loubet from the
+Center for Biomembrane Physics in Denmark.
 
 \section{New in release 2.0.8}
 

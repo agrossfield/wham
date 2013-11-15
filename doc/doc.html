@@ -17,7 +17,7 @@
 
 
 <center><b>An implementation of WHAM: the Weighted Histogram Analysis Method</b> <br />
-<b>Version 2.0.8</b> <br />
+<b>Version 2.0.9</b> <br />
 <br /><br /><br />
 <b>Alan Grossfield</b> <br />
 
@@ -66,7 +66,17 @@ Suggestions and patches are welcome.
 
 <div class="p"><!----></div>
  <h2><a name="tth_sEc2">
-2</a>&nbsp;&nbsp;New in release 2.0.8</h2>
+2</a>&nbsp;&nbsp;New in release 2.0.9</h2>
+
+<div class="p"><!----></div>
+The is a bug-fix release; there was a memory allocation error in wham-2d
+that caused a segfault if the number of bins in the 2nd dimension was
+greater than the number of windows.  Caught by Bastien Loubet from the
+Center for Biomembrane Physics in Denmark.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc3">
+3</a>&nbsp;&nbsp;New in release 2.0.8</h2>
 
 <div class="p"><!----></div>
 Major performance improvements to wham-2d (roughly 100x faster).  The final
@@ -74,8 +84,8 @@ answers should be indistinguishable from previous versions.  Code
 contributed by Nikolay Plotnikov from Stanford's Chemistry Department.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc3">
-3</a>&nbsp;&nbsp;New in release 2.0.7</h2>
+ <h2><a name="tth_sEc4">
+4</a>&nbsp;&nbsp;New in release 2.0.7</h2>
 
 <div class="p"><!----></div>
 I messed up the ability to switch units from kcal to kJ: in addition to
@@ -83,8 +93,8 @@ defining k_B in the header files, I also had a define in wham_2d.c.  Caught
 by Yi Yao of UNC.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc4">
-4</a>&nbsp;&nbsp;New in release 2.0.6</h2>
+ <h2><a name="tth_sEc5">
+5</a>&nbsp;&nbsp;New in release 2.0.6</h2>
 
 <div class="p"><!----></div>
 The primary new feature in version 2.0.6 is the ability to exclude regions
@@ -112,8 +122,8 @@ code, edit <tt>wham/wham.h</tt> and <tt>wham-2d/wham-2d.h</tt> and change which
 version of the constant <tt>k_B</tt> is defined.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc5">
-5</a>&nbsp;&nbsp;New in release 2.0.4 and 2.0.5</h2>
+ <h2><a name="tth_sEc6">
+6</a>&nbsp;&nbsp;New in release 2.0.4 and 2.0.5</h2>
 
 <div class="p"><!----></div>
 Version 2.0.5 is a trivial patch on 2.0.4, upping the length of lines allowed
@@ -143,8 +153,8 @@ Many thanks to Michael Shirts, for helpful discussions and contributing much
 of the code changes that went into this release.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc6">
-6</a>&nbsp;&nbsp;Installation</h2>
+ <h2><a name="tth_sEc7">
+7</a>&nbsp;&nbsp;Installation</h2>
 
 <div class="p"><!----></div>
 Untarring wham.tgz will create a directory wham/, which in turn contains
@@ -209,8 +219,8 @@ because you're reading this, and nr/, which contains a couple of files from
 Numerical Recipes).  You don't need to do anything with these directories.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc7">
-7</a>&nbsp;&nbsp;Command line arguments and file formats</h2>
+ <h2><a name="tth_sEc8">
+8</a>&nbsp;&nbsp;Command line arguments and file formats</h2>
 
 <div class="p"><!----></div>
 To get a listing of the command line arguments for either wham or wham-2d,
@@ -219,12 +229,12 @@ included in brackets.  Both programs will echo their command line into the
 output file, to help you figure out what you did.
 
 <div class="p"><!----></div>
-     <h3><a name="tth_sEc7.1">
-7.1</a>&nbsp;&nbsp;wham</h3>
+     <h3><a name="tth_sEc8.1">
+8.1</a>&nbsp;&nbsp;wham</h3>
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.1.1">
-7.1.1</a>&nbsp;&nbsp;Command line arguments for WHAM</h4>
+      <h4><a name="tth_sEc8.1.1">
+8.1.1</a>&nbsp;&nbsp;Command line arguments for WHAM</h4>
 
 <div class="p"><!----></div>
 
@@ -296,8 +306,8 @@ integer which controls the random number seed - the value you pick should
 be irrelevant, but I let the user set it primarily for debugging purposes.
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.1.2">
-7.1.2</a>&nbsp;&nbsp;File formats</h4>
+      <h4><a name="tth_sEc8.1.2">
+8.1.2</a>&nbsp;&nbsp;File formats</h4>
 <a name="ss:format">
 </a>
 
@@ -376,8 +386,8 @@ data, containing the system's potential energy at that time point.  It
 should be a floating point value.
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.1.3">
-7.1.3</a>&nbsp;&nbsp;Output</h4>
+      <h4><a name="tth_sEc8.1.3">
+8.1.3</a>&nbsp;&nbsp;Output</h4>
 
 <div class="p"><!----></div>
 The first line of the output file contains echoes command line.  The next
@@ -490,12 +500,12 @@ bootstrapping is performed.  See section  for further
 discussion of error estimation.
 
 <div class="p"><!----></div>
-     <h3><a name="tth_sEc7.2">
-7.2</a>&nbsp;&nbsp;wham-2d</h3>
+     <h3><a name="tth_sEc8.2">
+8.2</a>&nbsp;&nbsp;wham-2d</h3>
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.2.1">
-7.2.1</a>&nbsp;&nbsp;Command line arguments</h4>
+      <h4><a name="tth_sEc8.2.1">
+8.2.1</a>&nbsp;&nbsp;Command line arguments</h4>
 
 <div class="p"><!----></div>
 
@@ -534,8 +544,8 @@ the automasking feature, which causes bins for which there is no sample data
 to be excluded from the wham calculation.
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.2.2">
-7.2.2</a>&nbsp;&nbsp;File formats</h4>
+      <h4><a name="tth_sEc8.2.2">
+8.2.2</a>&nbsp;&nbsp;File formats</h4>
 
 <div class="p"><!----></div>
 As with regular 1 dimensional wham, each line of the metadata file should
@@ -600,8 +610,8 @@ should be a floating point value.  See the section on replica exchange for
 more details.
 
 <div class="p"><!----></div>
-      <h4><a name="tth_sEc7.2.3">
-7.2.3</a>&nbsp;&nbsp;Output</h4>
+      <h4><a name="tth_sEc8.2.3">
+8.2.3</a>&nbsp;&nbsp;Output</h4>
 
 <div class="p"><!----></div>
 The output largely resembles that for wham, except with more columns.  The
@@ -681,12 +691,12 @@ uncertainty.  The two uncertainty columns will be zero if you did not use
 Monte Carlo bootstrapping.
 
 <div class="p"><!----></div>
- <h2><a name="tth_sEc8">
-8</a>&nbsp;&nbsp;Discussion</h2>
+ <h2><a name="tth_sEc9">
+9</a>&nbsp;&nbsp;Discussion</h2>
 
 <div class="p"><!----></div>
-     <h3><a name="tth_sEc8.1">
-8.1</a>&nbsp;&nbsp;Periodicity</h3>
+     <h3><a name="tth_sEc9.1">
+9.1</a>&nbsp;&nbsp;Periodicity</h3>
 
 <div class="p"><!----></div>
 Use of periodic boundary conditions only changes one thing in the
@@ -707,8 +717,8 @@ to +225.  The numpad value has no effect at all on the values computed for
 the PMF and probability.
 
 <div class="p"><!----></div>
-     <h3><a name="tth_sEc8.2">
-8.2</a>&nbsp;&nbsp;Monte Carlo Bootstrap Error Analysis</h3>
+     <h3><a name="tth_sEc9.2">
+9.2</a>&nbsp;&nbsp;Monte Carlo Bootstrap Error Analysis</h3>
 <a name="ss:bootstrap">
 </a>
 
@@ -836,8 +846,8 @@ calculation.  This isn't like to be an issue, as the raw PMFs aren't that
 sensitive to the correlation times unless they vary by factors of 10 or more.  
 
 <div class="p"><!----></div>
-     <h3><a name="tth_sEc8.3">
-8.3</a>&nbsp;&nbsp;Using the code for replica exchange simulations</h3>
+     <h3><a name="tth_sEc9.3">
+9.3</a>&nbsp;&nbsp;Using the code for replica exchange simulations</h3>
 <a name="ss:repex">
 </a>
 
@@ -854,12 +864,12 @@ First, the metadata file format has changed as of the November, 2007 release
 of the code.  If you want to specify temperatures in the metadata file, you
 also have to specify the number of Monte Carlo points to use (if you're not
 using bootstrapping, you can safely set this to any integer).  See section
-<a href="#ss:format">7.1.2</a> for details.
+<a href="#ss:format">8.1.2</a> for details.
 
 <div class="p"><!----></div>
 In order to use wham with time series collected at different temperatures,
 the first thing to do is to follow the instructions given in section
-<a href="#ss:format">7.1.2</a> regarding the format of the metadata and time series files,
+<a href="#ss:format">8.1.2</a> regarding the format of the metadata and time series files,
 while setting the spring constants to 0.  Indeed, for simple circumstances
 involving small systems this may be enough for you to make a successful
 calculation.  
@@ -910,5 +920,5 @@ additional umbrella-sampled trajectory.
 T<sub><font size="-1">E</font></sub>X
 by <a href="http://hutchinson.belmont.ma.us/tth/">
 T<sub><font size="-1">T</font></sub>Hgold</a>,
-version 4.00.<br />On  8 Oct 2013, 08:23.</small>
+version 4.00.<br />On 15 Nov 2013, 07:40.</small>
 </html>
