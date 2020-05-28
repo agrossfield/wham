@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\usepackage{lwarp}
 \usepackage{url}
 \usepackage[pdftex,colorlinks=true,urlcolor=blue,filecolor=blue,linkcolor=blue,citecolor=blue,breaklinks=true]{hyperref}
 \begin{document}
@@ -6,7 +7,7 @@
 \begin{center}
 \begin{LARGE}
 {\bf An implementation of WHAM: the Weighted Histogram Analysis Method} \\
-{\bf Version 2.0.9} \\
+{\bf Version 2.0.10} \\
 \vspace*{0.5in}
 {\bf Alan Grossfield} \\
 \end{LARGE}
@@ -34,21 +35,25 @@ run into trouble using these programs, feel free to contact me
 (alan\_grossfield@urmc.rochester.edu), and I'll try to help you.  This code
 is available under the GPL and BSD licenses, as you prefer.  The exception to
 this licensing is a set of routines from Numerical Recipes, which are not mine
-to give away.  
+to give away.
 
 If you use this code as part of an original piece of research, I'd
 appreciate a reference or acknowledgment.  There's no publication to
 reference, so please use something like:
 
 \noindent
-Grossfield, A, ``WHAM: an implementation of the weighted histogram analysis 
+Grossfield, A, ``WHAM: an implementation of the weighted histogram analysis
 method'', \url{http://membrane.urmc.rochester.edu/content/wham/}, version
 XXXX
 
 \noindent For that matter, just letting me know what you're using my code for
 would be nice, although again I don't insist upon it.
 
-Suggestions and patches are welcome.  
+Suggestions and patches are welcome.
+
+\section{New in release 2.0.10}
+
+This is a documentation-only release. Basically, I'm updating a bunch of the advice I give, based on new experience. The main thing is I'm deprecating the temperature-dependence code, both for computing free energy profiles at a different temperature from the one the simulations were run at, and for analyzing replica exchange. I don't think the code is wrong per se, but it's not particularly reliable, and there are better methods out there (e.g. MBAR).
 
 \section{New in release 2.0.9}
 
@@ -71,23 +76,23 @@ by Yi Yao of UNC.
 
 \section{New in release 2.0.6}
 
-The primary new feature in version 2.0.6 is the ability to exclude regions
-of a 2D reaction coordinate from a calculation, which we're calling
-``masking''.  This is useful in cases where the PMF is being used to sample a
+The primary new feature in version 2.0.6 is the ability to exclude regions of a
+2D reaction coordinate from a calculation, which we're calling ``masking''.
+This is useful in cases where the free energy profiles is being used to sample a
 pathway that is two dimensional, but where large areas of the 2D surface are
 either uninteresting or physically unattainable; for example, if the two
 reaction coordinates are RMSDs from 2 distinct structures, it is almost
 certainly impossible to sample the region where the RMS distance to each
 structure is very small.  In practice, you could generally do the calculation
-anyway and just accept lots of NaNs and Infs floating around in the output,
-but sometimes that would fail and this way is far cleaner and robust.  In
-this case, I chose to implement a very simple automasking procedure, such
-that any bin that has no data from any window is excluded.  I suppose I could
-further generalize it, so that any bin with fewer than N points is excluded,
-but I haven't done that yet.
+anyway and just accept lots of NaNs and Infs floating around in the output, but
+sometimes that would fail and this way is far cleaner and robust.  In this case,
+I chose to implement a very simple automasking procedure, such that any bin that
+has no data from any window is excluded.  I suppose I could further generalize
+it, so that any bin with fewer than N points is excluded, but I haven't done
+that yet.
 
 There's one other trivial but often requested feature in version 2.0.6: if
-you prefer to work in SI units, I've made it easier to switch energy units 
+you prefer to work in SI units, I've made it easier to switch energy units
 from kcal to kJ (the units of your reaction coordinate are, as always, up to
 you).  It's a compile-time choice, but I figure that's fine because very few
 people switch units constantly.  The switch is easy -- before you build the
@@ -99,16 +104,16 @@ version of the constant {\tt k\_B} is defined.
 Version 2.0.5 is a trivial patch on 2.0.4, upping the length of lines allowed
 when reading files.
 
-Release 2.0.4 has seen major revision to the bootstrap error analysis.  
-I've known for a while that the way I computed the uncertainty in the free
-energy was suboptimal, since it just extrapolated from the uncertainty in the
-probability using the assumption that the fluctuations were gaussianly
-distributed.  I knew this wasn't a great assumption, but Michael Shirts
-showed me data showing just how bad it was.  So, in this version, we're doing
-something different.  For 1D wham, we're directly computing the fluctuations
-in the PMF at each bin, aligning the pmfs such that their partition functions
-are all 1; this amounts to shifting them so that their Boltzmann-weighted
-free energies are the same.  I think the errors make more sense now.
+Release 2.0.4 has seen major revision to the bootstrap error analysis.  I've
+known for a while that the way I computed the uncertainty in the free energy was
+suboptimal, since it just extrapolated from the uncertainty in the probability
+using the assumption that the fluctuations were gaussianly distributed.  I knew
+this wasn't a great assumption, but Michael Shirts showed me data showing just
+how bad it was.  So, in this version, we're doing something different.  For 1D
+wham, we're directly computing the fluctuations in the free energy at each bin,
+aligning the pmfs such that their partition functions are all 1; this amounts to
+shifting them so that their Boltzmann-weighted free energies are the same.  I
+think the errors make more sense now.
 
 For 2D wham, I think doing this analysis uncovered some other flaws in how the
 error analysis is done, ones that to be honest I'm not totally sure how to
@@ -122,12 +127,12 @@ of the code changes that went into this release.
 \section{Installation}
 
 Untarring wham.tgz will create a directory wham/, which in turn contains
-several directories (wham/ wham-2d/ doc/ nr/).   
+several directories (wham/ wham-2d/ doc/ nr/).
 
 Before you build the code, you need to choose your units for energy.  If you
 want kcal/mol, do nothing.  If you prefer to work in kJ, you need to edit
 2 files, {\tt wham/wham.h} and {\tt wham-2d/wham-2d.h}.  In each case, near the
-top of the file you'll see a pair of lines that look like 
+top of the file you'll see a pair of lines that look like
 
 \begin{verbatim}
 #define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
@@ -136,9 +141,9 @@ top of the file you'll see a pair of lines that look like
 
 To get kJ, you simply remove the ``//'' from the second line and put it
 before the first line, and save the file.  In principle, you can do just wham
-or just wham-2d, but I recommend against it for your own sanity.  
+or just wham-2d, but I recommend against it for your own sanity.
 
-To build the standard 1-D wham code on a machine which has gcc, you should
+To build the standard 1-D wham code on a machine that has gcc, you should
 
 \begin{verbatim}
     cd wham
@@ -190,7 +195,7 @@ has a periodicity of 360, appropriate for angles. ``Ppi'' specifies a
 periodicity of 2*pi, appropriate for angles measured in radians.  ``Pval''
 specifies periodicty of some arbitrary amount, val, which should be an
 integer or floating point number.  For example, ``P180.0'' would be
-appropriate for an angle with twofold symmetry. 
+appropriate for an angle with twofold symmetry.
 
 hist\_min and hist\_max specify the boundaries of the histogram.  As a rule,
 all data points outside the range (hist\_min, hist\_max) are silently
@@ -200,7 +205,7 @@ that file from the metadata file.  hist\_min and hist\_max should be floating
 point numbers.
 
 num\_bins specifies the number of bins in the histogram, and as a result the
-number of points in the final PMF.  It should be an integer.
+number of points in the final free energy curve.  It should be an integer.
 
 tol is the convergence tolerance for the WHAM calculations.  Specifically,
 the WHAM iteration is considered to be converged when no $F_i$ value for any
@@ -210,35 +215,35 @@ recent iteration.  Obviously, this number will be smaller than tol
 before the computation converges, because convergence is triggered by the
 largest change as opposed to the average.
 
-temperature is a floating point number representing the temperature in
-Kelvin at which the weighted histogram calculation is performed.  This does
-not have to be the temperature at which the simulations were performed (see
-below for discussion).
+temperature is a floating point number representing the temperature in Kelvin at
+which the weighted histogram calculation is performed.  Strictly speaking, this
+does not have to be the temperature at which the simulations were performed (see
+below for discussion), but as a rule you'll want them to be same.
 
 numpad specifies the number of ``padding'' values that should be printed for
-periodic PMFs.  This number should be set to 0 for aperiodic reaction
-coordinates.  It doesn't actually affect the calculation in any way.
-Rather, it just alters the final printout of the free energy, to make
-plotting of periodic reaction coordinates simpler.  This is more important
-for wham-2d than wham.
+periodic free energy curve.  This number should be set to 0 for aperiodic
+reaction coordinates.  It doesn't actually affect the calculation in any way.
+Rather, it just alters the final printout of the free energy, to make plotting
+of periodic reaction coordinates simpler.  This is more important for wham-2d
+than wham.
 
 metadatafile specifies the name of the metadata file.  The format of this
 file is described below.
 
-freefile is the name used for the file containing the final PMF and
-probability distribution.
+freefile is the name used for the file containing the final free energy curve
+and probability distribution.
 
 num\_MC\_trials and randSeed are both related to the performance of Monte
 Carlo bootstrap error analysis.  If these values are not supplied, error
 analysis is not performed.  num\_MC\_trials should be an integer specifying
 the number of fake data sets which should be generated.  randSeed is an
-integer which controls the random number seed -- the value you pick should
+integer that controls the random number seed -- the value you pick should
 be irrelevant, but I let the user set it primarily for debugging purposes.
 
 \subsubsection{File formats}
 \label{ss:format}
 
-Each line of the metadata file should be blank, begin with a ``\#'' (marking a 
+Each line of the metadata file should be blank, begin with a ``\#'' (marking a
 comment), or have the following format:
 
 \begin{footnotesize}
@@ -252,22 +257,22 @@ in a moment).  The second field, loc\_win\_min, is the location of the
 minimum of the biasing potential for this simulation, a floating point
 number.  The third field, spring, is the spring constant for the biasing
 potential used in this simulation, assuming the biasing potential is of the
-format 
+format
 
 \begin{equation}
-V = \frac{1}{2} k (x-x_0)^2.  
+V = \frac{1}{2} k (x-x_0)^2.
 \end{equation}
 
 Many simulation packages, including TINKER, AMBER, and CHARMM, do not include
-the $\frac{1}{2}$ when they specify spring constants for their restraint
-terms.  This is a common source of error (I'd love to change my code to match
-the other packages' behavior, but then experienced users who don't read the
-manual would get messed up).  Also, the units for the spring constant must
-match those for the time series.  So, if your time series is a distance
-recorded in {\AA}ngstroms, the spring constant must be in kcal/mol-{\AA}$^2$.
-AMBER users should take care when using angular restraints: the specification
+the $\frac{1}{2}$ when they specify spring constants for their restraint terms.
+This is a common source of error (I'd love to change my code to match the other
+packages' behavior, but then experienced users who don't read the manual would
+get messed up).  Also, the units for the spring constant must match those for
+the time series.  So, if your time series is a distance recorded in
+{\AA}ngstroms, the spring constant must be in kcal/mol-{\AA}$^2$.  AMBER users
+in particular should take care when using angular restraints: the specification
 and output of angles is in degrees, but AMBER's spring constants use
-kcal/mol-rad$^2$.
+kcal/mol-rad$^2$, so you'll have to convert the units of the spring constants to kcal/mol-deg$^2$ in the metadata file.
 
 The fourth argument (``correl time'') specifies the decorrelation time for
 your time series, in units of time steps.  It is only used when generating
@@ -281,7 +286,7 @@ discussion about how to do bootstrapping.
 Finally, the last (optional) field is the temperature for this simulation.  If
 not supplied, the temperature specified on the command line is used.  In
 the present version of the code, you must either leave the temperature
-unspecified for all simulations or specify it for all simulations.  
+unspecified for all simulations or specify it for all simulations.
 
 The time series files must follow one of two formats, depending on whether
 the temperature was specified in the metadata file.  If no temperature was
@@ -299,7 +304,7 @@ should be a floating point value.
 
 The first line of the output file contains echoes command line.  The next
 line or two contain comments describing the periodicity used and the number
-of simulation windows present.  
+of simulation windows present.
 While the calculation is running, it will print out lines that look like
 the following:
 \begin{verbatim}
@@ -312,10 +317,10 @@ the following:
 This specifies the current iteration number, and the average change in the
 F values for the current iteration.  This number is not used for deciding
 when the calculation has converged; rather, the maximum change, as opposed
-to the average, is used.  
+to the average, is used.
 
-Every 100 iterations, the current version of the PMF is dumped into the
-output file.  These lines look like
+Every 100 iterations, the current version of the free energy curve is dumped
+into the output file.  These lines look like
 
 \begin{verbatim}
 -178.000000     0.014212        4909.138943
@@ -326,13 +331,13 @@ output file.  These lines look like
 \end{verbatim}
 
 The first column is the value of the reaction coordinate, the second is the
-value of the PMF, and the third is the unnormalized probability
+value of the free energy, and the third is the unnormalized probability
 distribution.
 
 Once the calculation has converged, wham will produce output resembling
 
 \begin{verbatim}
-# Dumping simulation biases, in the metadata file order 
+# Dumping simulation biases, in the metadata file order
 # Window  F (free energy units)
 # 0     0.000004
 # 1     -4.166136
@@ -345,10 +350,12 @@ Once the calculation has converged, wham will produce output resembling
 These are the final F values from the wham calculation, and can be used for
 computing weighted averages for properties other than the free energy.
 
-You may have noticed that all of the lines except the free energies are
-preceded by ``\#''.  This allows you to check convergence of your wham
-calculation by simply plotting the output file in gnuplot.  If the free
-energy curves have stopped changing, your tolerance is small enough.  
+You may have noticed that all of the lines except the free energies are preceded
+by ``\#''.  This allows you to check convergence of your wham calculation by
+simply plotting the output file in gnuplot.  If the free energy curves have
+stopped changing, your tolerance is small enough. In most cases, a tolerance
+value of $10^{-5}$ is sufficient, but if your free energy curve has a wide range
+of values lower tolerance might be needed, so it's crucial that you check.
 
 If you specified a nonzero number of Monte Carlo bootstrap error analysis
 trials, you will see lines that resemble
@@ -364,7 +371,7 @@ trials, you will see lines that resemble
 at the end of the file.
 
 The free energy data file is written when the calculation converges, and
-resembles: 
+resembles:
 
 \begin{verbatim}
 #Coor           Free            +/-             Prob            +/-
@@ -389,7 +396,7 @@ discussion of error estimation.
 \begin{verbatim}
 wham-2d Px[=0|pi|val] hist_min_x hist_max_x num_bins_x  \
         Py[=0|pi|val] hist_min_y hist_max_y num_bins_y  \
-        tol temperature numpad metadatafile freefile \ 
+        tol temperature numpad metadatafile freefile \
         use_mask
 \end{verbatim}
 
@@ -407,7 +414,7 @@ hist\_min\_x, hist\_max\_x, and num\_bins\_x behave exactly like hist\_min,
 hist\_max, and num\_bins do in the 1 dimensional program.
 
 Py, hist\_min\_y, etc., behave the same as Px, hist\_min\_x, etc., except they
-control the second coordinate of the PMF.
+control the second coordinate of the free energy surface.
 
 use\_mask expects an integer value, and if its values is non-zero turns on
 the automasking feature, which causes bins for which there is no sample data
@@ -446,7 +453,7 @@ discussion about how to do bootstrapping.
 Finally, the last field is the temperature this simulation was run at.  If
 not supplied, the temperature specified on the command line is used.  In
 the present version of the code, you must either leave the temperature
-unspecified for all simulations or specify it for all simulations.  
+unspecified for all simulations or specify it for all simulations.
 
 The time series files must follow one of two formats, depending on whether
 the temperature was specified in the metadata file.  If no temperature was
@@ -463,11 +470,10 @@ more details.
 
 \subsubsection{Output}
 
-The output largely resembles that for wham, except with more columns.  The
-first line echoes the command line, followed by a specification of the
-periodicity, and the number of windows.  The iteration lines have the same
-meaning.  When the current value for the PMF is dumped, the format looks
-like 
+The output largely resembles that for wham, except with more columns.  The first
+line echoes the command line, followed by a specification of the periodicity,
+and the number of windows.  The iteration lines have the same meaning.  When the
+current value for the free energy curve is dumped, the format looks like
 
 \begin{verbatim}
 -172.500000     -172.500000     1.968750        15.394489
@@ -476,13 +482,13 @@ like
 -172.500000     -127.500000     3.505869        1.141952
 \end{verbatim}
 where the first two columns are the values of the first and second
-dimensions of the reaction coordinate, the third column is the PMF, and the 
-last column is the unnormalized probability.  
+dimensions of the reaction coordinate, the third column is the free energy, and
+the last column is the unnormalized probability.
 
 Once the calculation has converged, wham will produce output resembling
 
 \begin{verbatim}
-# Dumping simulation biases, in the metadata file order 
+# Dumping simulation biases, in the metadata file order
 # Window  F (free energy units)
 #0       -0.000004
 #1       -0.156869
@@ -526,6 +532,58 @@ Monte Carlo bootstrapping.
 
 \section{Discussion}
 
+\subsection{Terminology: PMF vs. Free Energy Curve}
+
+The output of a WHAM calculation is usually referred to as a PMF, short for
+potential of mean force. Strictly speaking, this is not correct, since the
+potential of mean force is defined as
+
+\begin{equation}
+    PMF(x) = -k_B T \ln \rho(x)
+\end{equation}
+
+\noindent
+where $\rho$ is the probability density. By contrast, the free energy curve is
+
+\begin{equation}
+    F(x) = -k_B T \ln p(x)
+\end{equation}
+
+\noindent
+where $p$ is the probability. The distinction between the two is the inclusion
+in the latter of the Jacobian of x, which can be thought of as the volume
+associated with different values of x as a result of projection.
+
+To make this more concrete, consider a pair of ideal gas particles. There are no
+forces between the particles, so all possible relative positionings of the
+pakpsewhich lwarp.styrticles are equally likely, giving a probability density (and thus a PMF) that
+is constant with distance. Alternatively, if one considers the derivation of the
+PMF, where one integrates the ensemble averaged force, it is trivial to
+establish that the PMF is constant because the force is 0 everywhere.
+
+By contrast, the free energy is \emph{NOT} constant as a function of distance,
+because increasing the distance is entropically favorable. This can be
+visualized by centering the coordinate system on one particle and using
+spherical coordinates. The volume accessible at a distance $r$ is $4 \pi r^2
+dr$, so equal density everywhere implies that probability increases with
+distance, and as a result the free energy will drop with increasing distance.
+
+Umbrella sampling relies on probability distributions along the chosen
+coordinate, so it produces free energy curves, not PMFs. As far as I can, this
+is true of all enhanced sampling methods, with the exception of adaptive force
+biasing (and free energy perturbation, but this is almost never used for
+anything other than alchemy, where the Jacobian is 1).
+
+If you truly want a PMF and know the Jacobian for your chosen coordinate, you
+can simply add $k_B T \ln J(X)$ to the free energy curve output from wham.
+
+In case you're wondering why I don't offer this as a feature of wham, the
+problem is my code is by design agnostic to your choice of reaction coordinate.
+It neither knows nor cares whether it's operating on a distance, angle, torsion,
+or some other complicated function of coordinates. As a result, there's no easy
+way to know which Jacobian to apply.
+
+
 \subsection{Periodicity}
 
 Use of periodic boundary conditions only changes one thing in the
@@ -542,7 +600,7 @@ explicitly visible in the free energy.  So, if a calculation was done using
 360 degree periodicity, 36 windows, with the reaction coordinate ranging
 -180 to 180, and numpad=5, a total of 46 values would be output, from -225
 to +225.  The numpad value has no effect at all on the values computed for
-the PMF and probability.
+the free energy and probability.
 
 \subsection{Monte Carlo Bootstrap Error Analysis}
 \label{ss:bootstrap}
@@ -565,7 +623,7 @@ more detailed discussion, see ``An introduction to the bootstrap'', by Efron
 and Tibshirani (Chapman and Hall/CRC, 1994).  Please note: bootstrapping can
 only characterize the data you have.  If your data is missing contributions
 from important regions of phase space, bootstrapping will not help you figure
-this out.  
+this out.
 
 In principle, the standard bootstrap technique could be applied directly to
 WHAM calculations.  One could generate a fake data set for each time
@@ -574,7 +632,7 @@ However, this would be inefficient, since it would either involve a)
 generating many time series in the file system, or b) storing the time
 series in memory.  Neither of these strategies is particularly satisfying,
 the former because it involves generating a large number of files and the
-latter because it would consume very large amounts of memory.  
+latter because it would consume very large amounts of memory.
 My implementation of WHAM is very memory efficient because not only does it
 not store the time series, it doesn't even store the whole histogram of
 that time series, but rather just the nonzero portion.
@@ -587,7 +645,7 @@ The histogram of each time series is precisely that, an estimate of the
 probability distribution.  So, all we have to do is pick random numbers
 from the distribution defined by that histogram.  Once again, Numerical
 Recipes shows us how to do it: we compute the normalized cumulant function,
-$c(x)$, generate a random number between 0 and 1 $R$, and solve $c(x) = R$ 
+$c(x)$, generate a random number between 0 and 1 $R$, and solve $c(x) = R$
 for $x$.  Thus, a single Monte Carlo trial is computed in the following manner:
 
 \begin{enumerate}
@@ -598,17 +656,22 @@ to generate a new histogram, with the same number of points.
 \item Perform WHAM iterations on the set of generated histograms
 
 \item Store the average normalized probability and free energy, and their
-squares for each bin in the histogram 
+squares for each bin in the histogram
 \end{enumerate}
 
-There's a subtlety to how you compute fluctuations in the free energy
-estimates, since the potential of mean force is only defined up to a
-constant.  I have chosen to align the PMFs by computing them from the
-normalized probabilities, which is effectively the same as setting the
-Boltzmann-averaged free energies equal.  This is a somewhat arbitrary choice
-(for example, one could also set the unweighted averages equal), but it seems
-reasonable.  If you want something bulletproof, use the probabilities and
-their associated fluctuations, which don't have this problem.
+There's a subtlety to how you compute fluctuations in the free energy estimates,
+since the potential of mean force is only defined up to a constant.  I have
+chosen to align the free energy curves by computing them from the normalized
+probabilities, which is effectively the same as setting the Boltzmann-averaged
+free energies equal.  This is a somewhat arbitrary choice (for example, one
+could also set the unweighted averages equal), but it seems reasonable.  If you
+want something bulletproof, use the probabilities and their associated
+fluctuations, which don't have this problem. A better solution, which I haven't
+implemented yet, is to use the derivative-based approach from Smith, et al (J.
+Chem. Theor. Comput., 2018, 14, 6598-6612). I haven't implemented this yet, but
+if you're generating multiple free energy curves anyway (perhaps because you've
+done multiple replicates), that approach is better, and code is available from
+\url{https://github.com/lgsmith/derivative-stats}.
 
 The situation is slightly more complicated when one attempts to apply the
 bootstrap procedure in two dimensions, because the cumulant is not uniquely
@@ -625,7 +688,7 @@ interval.  To put it another way, we've assumed that all of the data points
 are statistically independent.  However, this is unlikely to be the case in a
 typical molecular dynamics setting, which means that the sample size used in
 the Monte Carlo bootstrapping procedure is too large, which in turn causes
-the bootstrapping procedure to underestimate the statistical uncertainty.  
+the bootstrapping procedure to underestimate the statistical uncertainty.
 
 My code deals with this by allowing you to set the correlation time for each
 time series used in the analysis, in effect reducing the number of points
@@ -647,23 +710,31 @@ takes the autocorrelation to drop to $1/e$) would be a good choice.  If it's
 multiexponential, then you'd use the longest time constant.  However, be
 careful: you really want to use the longest correlation time sampled in the
 trajectory, and the fluctuations of the reaction coordinate may fluctuate
-rapidly but still be coupled to slower modes.  
+rapidly but still be coupled to slower modes.
 
 It is important to note that the present version of the code uses the
-correlation times only for the error analysis and not for the actual PMF
-calculation.  This isn't like to be an issue, as the raw PMFs aren't that
-sensitive to the correlation times unless they vary by factors of 10 or more.  
+correlation times only for the error analysis and not for the actual free energy
+calculation.  This isn't like to be an issue, as the raw free energy curves
+aren't that sensitive to the correlation times unless they vary by factors of 10
+or more.
 
 
 \subsection{Using the code for replica exchange simulations}
 \label{ss:repex}
+
+\emph{ NOTE: Using wham for replica exchange is now deprecated --- the numerical
+accuracy of my approach is dubious at best, and there are superior options
+available. I suggest using an implementation of the Multistate Bennett
+Acceptance Ratio (MBAR) method; one such implementation is pyMBAR, available
+from \url{https://github.com/choderalab/pymbar}. The discussion below is
+preserved for historical purposes.  }
 
 One major application for the ability to combine simulations run at different
 temperatures is the analysis of replica exchange simulations, and if the
 email I've gotten over the last couple of years is any indication, it's a
 pretty common one.  My code can be used for replica exchange, but I should
 start by admitting that it wasn't designed with it in mind, and may seem a
-bit clumsy.  
+bit clumsy.
 
 First, the metadata file format has changed as of the November, 2007 release
 of the code.  If you want to specify temperatures in the metadata file, you
@@ -676,7 +747,7 @@ the first thing to do is to follow the instructions given in section
 \ref{ss:format} regarding the format of the metadata and time series files,
 while setting the spring constants to 0.  Indeed, for simple circumstances
 involving small systems this may be enough for you to make a successful
-calculation.  
+calculation.
 
 However, for large systems this simple approach will almost certainly get you
 nothing but a bunch of NaNs in your output.  If this happens, the most likely
@@ -686,14 +757,14 @@ the histogram by $\exp(-E/k_B T)$ for each point (as opposed to counting each
 point as 1).  Since the potential energies for condensed-phase
 molecular dynamics systems using standard force fields are typically of order
 -50,000 kcal/mol, the means we'd be taking the exponential of a very large
-number, which is a Bad Thing numerically.  
+number, which is a Bad Thing numerically.
 
 However, in many circumstances one can work around this easily, by shifting
 the location of zero energy.  The simplest procedure is to locate this lowest
 energy in any of the trajectories, and shift \emph{all} of the energies in
 \emph{all} of the trajectories such that the lowest (most negative) value is
 now zero.  This will eliminate the overflows, since the largest contribution
-from an individual data point will now be 1.  
+from an individual data point will now be 1.
 
 However, shifting the energies upward can lead to a different set of
 problems, where a given simulation appears to have no probability associated
@@ -704,7 +775,7 @@ expected for condensed phase systems at high temperatures. Underflow in
 itself isn't a problem, but if that simulation is the only one which
 contributes to a bin in the histogram (or more generally if all of the
 simulations which sample a given bin have zero overall weight), the result
-will be a division by zero causing the probability to be NaN or Inf.  
+will be a division by zero causing the probability to be NaN or Inf.
 
 Solving this problem is sometimes quite simple: reshift the energies by a few
 kcal/mol, such that the lowest energy is moderately small instead of zero
