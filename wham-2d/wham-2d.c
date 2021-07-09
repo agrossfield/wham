@@ -1,12 +1,12 @@
-/* 
+/*
  * WHAM -- Weighted Histogram Analysis Method
  *         2 dimensional implementation
  *
  * Reference 1: Computer Physics Communications, 91(1995) 275-282, Benoit Roux
  * Body of code references equation numbers from this paper.
  *
- * This code is nearly identical to the 1D implementation.  I thought about 
- * making it one big program, but this seemed simpler, especially since the 
+ * This code is nearly identical to the 1D implementation.  I thought about
+ * making it one big program, but this seemed simpler, especially since the
  * 2D case requires more command line arguments.
  *
  * $Revision$
@@ -34,11 +34,13 @@ double **HISTOGRAM;
 int  NUM_BINSx, NUM_BINSy;
 int PERIODICx, PERIODICy;
 double PERIODx, PERIODy;
+double *data1,**num,***bias;
+
 
 int main(int argc, char *argv[])
 {
 int i,j;
-double cpu, cpu1, cpu2; 
+double cpu, cpu1, cpu2;
 int k,iConverged;
 double *tempF;
 int first;
@@ -79,7 +81,7 @@ if (PERIODICx)
     {
     printf("#Turning on periodicity in x with period = %f\n", PERIODx);
     }
-    
+
 HIST_MINx = atof(argv[2]);
 HIST_MAXx = atof(argv[3]);
 NUM_BINSx = atoi(argv[4]);
@@ -131,7 +133,7 @@ for (i=0; i<NUM_BINSx; i++)
     HISTOGRAM[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
     if (!HISTOGRAM[i])
         {
-        printf("couldn't allocate space for HISTOGRAM[%d]: %s\n", 
+        printf("couldn't allocate space for HISTOGRAM[%d]: %s\n",
                 i,strerror(errno));
         exit(errno);
         }
@@ -148,7 +150,7 @@ for (i=0; i<NUM_BINSx; i++)
     prob[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
     if (!prob[i])
         {
-        printf("couldn't allocate space for prob[%d]: %s\n", 
+        printf("couldn't allocate space for prob[%d]: %s\n",
                 i,strerror(errno));
         exit(errno);
         }
@@ -165,7 +167,7 @@ for (i=0; i<NUM_BINSx; i++)
     final_prob[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
     if (!final_prob[i])
         {
-        printf("couldn't allocate space for final_prob[%d]: %s\n", 
+        printf("couldn't allocate space for final_prob[%d]: %s\n",
                 i,strerror(errno));
         exit(errno);
         }
@@ -182,7 +184,7 @@ for (i=0; i<NUM_BINSx; i++)
     free_ene[i] = (double *) malloc(sizeof(double) * NUM_BINSy);
     if (!free_ene[i])
         {
-        printf("couldn't allocate space for free_ene[%d]: %s\n", 
+        printf("couldn't allocate space for free_ene[%d]: %s\n",
                 i,strerror(errno));
         exit(errno);
         }
@@ -218,7 +220,7 @@ if (use_mask)
         mask[i] = (int *) calloc(NUM_BINSy, sizeof(int));
         if (!mask[i])
             {
-            printf("couldn't allocate space for mask[%d]: %s\n", 
+            printf("couldn't allocate space for mask[%d]: %s\n",
                     i,strerror(errno));
             exit(errno);
             }
@@ -271,8 +273,8 @@ if (!final_f || !tempF)
 
 
 // Figure out if we have trajectories at different temperatures.
-// Missing temperatures are set to -1 in read_metadata, and since we 
-// require that either all trajectories specify a temperature or all 
+// Missing temperatures are set to -1 in read_metadata, and since we
+// require that either all trajectories specify a temperature or all
 // trajectories are assumed to be at the WHAM temperature, we only have to
 // check one of them
 
@@ -294,9 +296,9 @@ free(HISTOGRAM);
 // for each window, zero out the estimated perturbation due to the restraints
 for (i=0; i< hist_group->num_windows; i++)
     {
-    //hist_group->F[i]=0.0; 
+    //hist_group->F[i]=0.0;
     //hist_group->F_old[i]=0.0;
-    hist_group->F[i]=1.0; 
+    hist_group->F[i]=1.0;
     hist_group->F_old[i]=1.0;
     }
 
@@ -320,17 +322,17 @@ for (i=0; i<NUM_BINSx; i++)
 // Do the actual WHAM stuff, iterate to self consistency
 iteration = 0;
 first = 1;
-iConverged = 0; 
+iConverged = 0;
 while ( ! iConverged || first)
     {
-    first = 0; 
+    first = 0;
     save_free(hist_group); //Save exp(Fi/kT) instead of F now
     wham_iteration(hist_group, prob, have_energy, use_mask, mask);
     // Dump out some info
     iteration++;
     if (iteration % 10 == 0)
         {
-        //since we store it as exp(F/kT) to save time and just calculate log while checking for convergence 
+        //since we store it as exp(F/kT) to save time and just calculate log while checking for convergence
         //which also needs not to be done at every step
         for (j=0; j<hist_group->num_windows ;j++)
                 {
@@ -339,16 +341,16 @@ while ( ! iConverged || first)
                 hist_group->F_old[j] = hist_group->kT[j] * log(hist_group->F_old[j]);
                 //printf("iter %i window %i F_old %f F_new %f\n",iteration,j,hist_group->F_old[j],hist_group->F[j]);
                     }
-        
+
         //Niko may be need to calculate Fi here from exp(Fi/kT)???
         iConverged = is_converged(hist_group);
-        //printf("iConverged %i\n",iConverged); 
+        //printf("iConverged %i\n",iConverged);
         error = average_diff(hist_group);
         if(! iConverged) for (j=0; j<hist_group->num_windows;j++)
                 hist_group->F[j] = tempF[j];
         printf("#Iteration %d:  %f\n", iteration, error);
         }
-    
+
     // Periodically dump out the histogram and free energy
     if (iteration % 100 == 0)
         {
@@ -358,7 +360,7 @@ while ( ! iConverged || first)
             for (j=0; j< NUM_BINSy; j++)
                 {
                 calc_coor(i,j,coor);
-                printf("%f\t%f\t%f\t%f\n", coor[0], coor[1], free_ene[i][j], 
+                printf("%f\t%f\t%f\t%f\n", coor[0], coor[1], free_ene[i][j],
                                         prob[i][j]);
                 }
             }
@@ -374,7 +376,7 @@ while ( ! iConverged || first)
 
 
     // Cheesy bailout if we're going on too long
-    if (iteration >= max_iteration) 
+    if (iteration >= max_iteration)
         {
         printf("Too many iterations: %d\n", iteration);
         break;
@@ -388,10 +390,10 @@ while ( ! iConverged || first)
 printf("# Dumping simulation biases, in the metadata file order \n");
 printf("# Window  F (free energy units)\n");
 //Niko put it here to save time since it slows down convergence
-//perhaps it's better to take as zero the global minimum rather than at the 1st window 
+//perhaps it's better to take as zero the global minimum rather than at the 1st window
 for (j=0; j<hist_group->num_windows;j++)
     {
-    //hist_group->F[j] -= hist_group->F[0];        
+    //hist_group->F[j] -= hist_group->F[0];
     printf("# %d\t%f\n", j, hist_group->F[j]-hist_group->F[0]);
     }
 
@@ -442,7 +444,7 @@ if (!FREEFILE)
         for (j=0; j< NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            printf("%f\t%f\t%f\t%f\n", coor[0], coor[1], 
+            printf("%f\t%f\t%f\t%f\n", coor[0], coor[1],
                                        free_ene[i][j], final_prob[i][j]);
             }
         }
@@ -452,31 +454,31 @@ else
     {
     // TODO: Add header like in the 1D case
     fprintf(FREEFILE, "#X\t\tY\t\tFree\t\tPro\n");
-    // leading padded values in x 
+    // leading padded values in x
     for (i=-numpad; i<0; i++)
         {
         // leading padding values in y
         for (j=-numpad; j<0; j++)
             {
-            calc_coor(i,j,coor); 
+            calc_coor(i,j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                    free_ene[NUM_BINSx+i][NUM_BINSy+j], 
+                    free_ene[NUM_BINSx+i][NUM_BINSy+j],
                     final_prob[NUM_BINSx+i][NUM_BINSy+j]);
             }
         // center values in y
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                           free_ene[NUM_BINSx+i][j], 
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                           free_ene[NUM_BINSx+i][j],
                            final_prob[NUM_BINSx+i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
-            calc_coor(i,NUM_BINSy+j,coor); 
+            calc_coor(i,NUM_BINSy+j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                           free_ene[NUM_BINSx+i][j], 
+                           free_ene[NUM_BINSx+i][j],
                            final_prob[NUM_BINSx+i][j]);
             }
         fprintf(FREEFILE, "\n");
@@ -487,23 +489,23 @@ else
         // leading padding values in y
         for (j=-numpad; j<0; j++)
             {
-            calc_coor(i,j,coor); 
+            calc_coor(i,j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                           free_ene[i][NUM_BINSy+j], 
+                           free_ene[i][NUM_BINSy+j],
                            final_prob[i][NUM_BINSy+j]);
             }
         // center values in y
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                             free_ene[i][j], 
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                             free_ene[i][j],
                              final_prob[i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
-            calc_coor(i,NUM_BINSy+j,coor); 
+            calc_coor(i,NUM_BINSy+j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
                              free_ene[i][j],
                              final_prob[i][j]);
@@ -516,7 +518,7 @@ else
         // leading padding values in y
         for (j=-numpad; j<0; j++)
             {
-            calc_coor(NUM_BINSx+i,j,coor); 
+            calc_coor(NUM_BINSx+i,j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
                              free_ene[i][NUM_BINSy+j],
                              final_prob[i][NUM_BINSy+j]);
@@ -525,16 +527,16 @@ else
         for (j=0; j<NUM_BINSy; j++)
             {
             calc_coor(NUM_BINSx+i,j,coor);
-            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1], 
-                             free_ene[i][j], 
+            fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
+                             free_ene[i][j],
                              final_prob[i][j]);
             }
         // trailing padding values in y
         for (j=0; j<numpad; j++)
             {
-            calc_coor(NUM_BINSx+i,NUM_BINSy+j,coor); 
+            calc_coor(NUM_BINSx+i,NUM_BINSy+j,coor);
             fprintf(FREEFILE,"%f\t%f\t%f\t%f\n", coor[0], coor[1],
-                             free_ene[i][j], 
+                             free_ene[i][j],
                              final_prob[i][j]);
             }
         fprintf(FREEFILE, "\n");
@@ -590,7 +592,7 @@ else
                 {
                 *period = RADIANS;  // 2 pi
                 }
-            else 
+            else
                 {
                 printf( COMMAND_LINE );
                 exit(-1);
@@ -610,15 +612,15 @@ return is_periodic;
 
 /*
  *  Perform a single WHAM iteration
- */   
-void wham_iteration(struct hist_group* hist_group, double **prob, 
+ */
+void wham_iteration(struct hist_group* hist_group, double **prob,
                     int have_energy, int use_mask, int **mask)
 {
 int i,j,k;
 //double num, denom, bias, bf, coor[2];
 double denom, bf, coor[2];        //Niko
 
-//Nikolay coor not needed to be calculated every iteration here 
+//Nikolay coor not needed to be calculated every iteration here
 //instead num[x][y] amd bias[x][y] should be calculated at the beginning just once
 
 // loop over bins of global histogram
@@ -661,7 +663,7 @@ for (i=0; i<NUM_BINSx; i++)
 for (j=0; j<hist_group->num_windows;j++)
     {
     //hist_group->F[j] = -hist_group->kT[j] * log(hist_group->F[j]);
-    //printf("i %i exp(-Fi/kT) %f\n",j,hist_group->F[j]); 
+    //printf("i %i exp(-Fi/kT) %f\n",j,hist_group->F[j]);
     hist_group->F[j] = 1.0/hist_group->F[j];
     }
 }

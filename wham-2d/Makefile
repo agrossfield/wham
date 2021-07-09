@@ -5,9 +5,9 @@
 
 # Linux flags
 CC=gcc
-#CFLAGS= -O2 -Wall -W
+CFLAGS= -O2 -Wall -W
 #Debugging flags
-CFLAGS= -g  -Wall -W
+#CFLAGS= -g  -Wall -W
 LFLAGS= -lm
 
 # SGI
@@ -18,7 +18,7 @@ LFLAGS= -lm
 # Alpha
 #CC=cc
 #CFLAGS = -fast -arch host -tune host
-#LFLAGS = -fast -non_shared -om -WL,-om_no_inst_sched -lm   
+#LFLAGS = -fast -non_shared -om -WL,-om_no_inst_sched -lm
 
 # location of Numerical Recipes code
 NR=../nr
@@ -26,7 +26,7 @@ NR=../nr
 SRCS=wham-2d.c file_read.c histogram.c $(NR)/ran2.c $(NR)/locate.c ../wham/bootstrap.c
 OBJS=wham-2d.o file_read.o histogram.o $(NR)/ran2.o $(NR)/locate.o ../wham/bootstrap.o
 
-wham-2d: $(OBJS) 
+wham-2d: $(OBJS)
 	$(CC) $(CFLAGS) -o wham-2d $(OBJS) $(LFLAGS)
 
 depend:
@@ -38,7 +38,7 @@ clean:
 remake:
 	make clean
 	make depend
-	make 
+	make
 
 tags: ${SRCS} *.h
 	ctags ${SRCS} *.h

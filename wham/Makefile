@@ -1,8 +1,8 @@
 # Linux flags
 CC=gcc
-CFLAGS= -O2 -Wall -W
+CFLAGS= -O2 -Wall -W 
 #Debugging flags
-#CFLAGS= -g  -Wall -W 
+#CFLAGS= -g  -Wall -W
 LFLAGS= -lm
 
 #Linux flags for intel compiler
@@ -10,7 +10,7 @@ LFLAGS= -lm
 #CFLAGS= -fast -Wall
 #LFLAGS= -lm
 
-# SGI 
+# SGI
 #CC=cc
 #CFLAGS = -O2 -mips4
 #LFLAGS= -lm
@@ -28,10 +28,10 @@ OBJS=wham.o file_read.o histogram.o bootstrap.o $(NR)/ran2.o $(NR)/locate.o
 HEADER_FILES= wham.h
 
 #all: wham driver
-all: wham 
+all: wham
 
-wham: $(OBJS) 
-	$(CC) $(CFLAGS) -o wham $(OBJS) $(LFLAGS) 
+wham: $(OBJS)
+	$(CC) $(CFLAGS) -o wham $(OBJS) $(LFLAGS)
 
 #driver: bootstrap.o driver.o $(NR)/ran2.o $(NR)/locate.o
 #	$(CC) $(CFLAGS) -o driver bootstrap.o driver.o ran2.o locate.o $(LFLAGS)

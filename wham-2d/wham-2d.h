@@ -50,7 +50,6 @@ extern double **HISTOGRAM;
  *                     a large memory savings, especially if we have a lot
  *                     of windows (and when we change over to 2 or 3
  *                     dimensions) */
-double *data1,**num,***bias;
 
 struct histogram
 {
