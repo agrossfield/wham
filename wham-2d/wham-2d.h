@@ -27,13 +27,15 @@ extern double PERIODx, PERIODy;     // flags to control periodic interval
 
 #define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
 //#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
+//#define k_B 1.0  // Boltzmann's constant in reduced units
+
 
 
 // Value inserted for the free energy of masked values
 #define MASKED 9999999.
 
 // global (untrimmed) histogram, global to prevent reallocation
-extern double **HISTOGRAM;  
+extern double **HISTOGRAM;
 
 
 /*
@@ -57,18 +59,18 @@ double *cum; // cumulative histogram array
 int first_x; // index of the 0th element of data in the global histogram
 int last_x;  // index of the last element of data in the global histogram
 int first_y;
-int last_y;  
+int last_y;
 int num_points;
 int num_mc_samples;
 int shift; // location of first nonzero element of cum
 };
 
-// This will be a data structure containing everything we need, so 
+// This will be a data structure containing everything we need, so
 // the routine which reads the metadata can return it all as 1 pointer
 struct hist_group
 {
 int num_windows; // number of separate biased trajectory windows
-double **bias_locations; // array of locations of the bias for each window 
+double **bias_locations; // array of locations of the bias for each window
                          // 2d for x and y
 double *springX; // array of spring constants for the biases for
                           // each window
@@ -84,7 +86,7 @@ double *partition; // configurational integral for each window, needed for
 struct histogram *hists; // array of histograms for each window
 };
 
-// The mask datatype specifies a rectangular region of the reaction coordinate 
+// The mask datatype specifies a rectangular region of the reaction coordinate
 // surface which will be ignored when computing the free energy.  If using this
 // functionality, we'll store an array of mask rectangles.
 struct mask
@@ -99,7 +101,7 @@ double ymax;
 // file_read.c
 int get_numwindows(FILE *file);
 int is_metadata(char *line);
-int read_metadata(FILE *file, struct hist_group *hist_group, 
+int read_metadata(FILE *file, struct hist_group *hist_group,
                   int use_mask, int **mask);
 //int read_maskfile(FILE *file, struct mask *mask_array);
 int read_data(char *filename, int have_energy, int use_mask, int **mask);
@@ -120,7 +122,7 @@ void clear_HISTOGRAM(void);
 void save_free(struct hist_group *h);
 int is_converged(struct hist_group *h);
 double average_diff(struct hist_group *h);
-void calc_free(double **free, double **prob, double kT, 
+void calc_free(double **free, double **prob, double kT,
                int use_mask, int **mask);
 double calc_bias(struct hist_group *h, int index, double *coor);
 
@@ -141,7 +143,3 @@ void mk_new_hist(double *cum, double *dist, int num_bins, int num_points,
 // Numerical Recipes routines
 double ran2(long *idum);
 double locate(double xx[], int n, double x, int *j);
-
-
-
-

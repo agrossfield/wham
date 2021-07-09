@@ -22,10 +22,11 @@ extern double PERIOD;
 
 #define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
 //#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
+//#define k_B 1.0  // Boltzmann's constant in reduced units
 
 
 // global (untrimmed) histogram, global to prevent reallocation
-extern double *HISTOGRAM;  
+extern double *HISTOGRAM;
 
 
 /*
@@ -42,7 +43,7 @@ extern double *HISTOGRAM;
  *                     dimensions)
  */
 
-struct histogram 
+struct histogram
 {
 double *data; // the actual histogram array
 double *cum; // the cumulative histogram array
@@ -54,19 +55,19 @@ int num_mc_samples;
 
 
 
-// This will be a data structure containing everything we need, so 
+// This will be a data structure containing everything we need, so
 // the routine which reads the metadata can return it all as 1 pointer
 struct hist_group
 {
 int num_windows; // number of separate biased trajectory windows
-double *bias_locations; // array of locations of the bias for each window 
+double *bias_locations; // array of locations of the bias for each window
 double *spring_constants; // array of spring constants for the biases for
                           // each window
 double *F; // array of free energy perturbations due to restraint
 double *F_old; // array of free energy perturbations due to restraint
                // from previous iteration
-double *kT; // array of sampling temperatures, in kcal/mol 
-double *partition; // configurational integral for each window, needed 
+double *kT; // array of sampling temperatures, in kcal/mol
+double *partition; // configurational integral for each window, needed
                    // for normalization purposes if sampling at different
                    // temperatures
 struct histogram *hists; // array of histograms for each window
@@ -84,7 +85,7 @@ int read_data(char *filename, int have_energy);
 
 // histogram.c
 double get_histval(struct histogram *hist, int index);
-struct histogram *hist_alloc(int first, int last, int num_points, 
+struct histogram *hist_alloc(int first, int last, int num_points,
                              int num_mc_samples);
 struct hist_group *hist_group_alloc(void);
 struct hist_group *make_hist_group(int num_windows);
@@ -108,7 +109,3 @@ void mk_new_hist(double *cum, double *dist, int num_bins, int num_points,
 // Numerical Recipes routines
 double ran2(long *idum);
 double locate(double xx[], int n, double x, int *j);
-
-
-
-

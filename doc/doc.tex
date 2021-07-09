@@ -130,18 +130,21 @@ Untarring wham.tgz will create a directory wham/, which in turn contains
 several directories (wham/ wham-2d/ doc/ nr/).
 
 Before you build the code, you need to choose your units for energy.  If you
-want kcal/mol, do nothing.  If you prefer to work in kJ, you need to edit
-2 files, {\tt wham/wham.h} and {\tt wham-2d/wham-2d.h}.  In each case, near the
-top of the file you'll see a pair of lines that look like
+want kcal/mol, do nothing.  If you prefer to work in kJ or reduced units
+($k_B=1$), you need to edit 2 files, {\tt wham/wham.h} and {\tt
+wham-2d/wham-2d.h}.  In each case, near the top of the file you'll see a pair of
+lines that look like
 
 \begin{verbatim}
 #define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
 //#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
+//#define k_B 1.0  // Boltzmann's constant in reduced units
 \end{verbatim}
 
-To get kJ, you simply remove the ``//'' from the second line and put it
-before the first line, and save the file.  In principle, you can do just wham
-or just wham-2d, but I recommend against it for your own sanity.
+To get kJ, you simply remove the ``//'' from the second line and put it before
+the first line, and save the file; uncomment the third line to get reduced
+units.  In principle, you can do just wham or just wham-2d, but I recommend
+against it for your own sanity.
 
 To build the standard 1-D wham code on a machine that has gcc, you should
 
