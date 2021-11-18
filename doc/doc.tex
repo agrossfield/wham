@@ -51,40 +51,45 @@ would be nice, although again I don't insist upon it.
 
 Suggestions and patches are welcome.
 
-\section{New in release 2.0.11}
+\subsection{New ...}
+
+Small change to Makefile to correctly clean out the nr/ directory, suggested by
+Lorenzo Rovigatti.
+
+\subsection{New in release 2.0.11}
 
 Two small changes: I added a quick compile-time option to use reduced energy units (suggested by Trung Dac Nguyen), and I fixed a compile problem on gcc 10 and later.
 
-\section{New in release 2.0.10.1}
+\subsection{New in release 2.0.10.1}
 
 This is a bugfix release only -- somehow, I managed to botch the packaging
 and not release all of the files. Thanks to Jared Wood for spotting my
 mistake.
 
-\section{New in release 2.0.10}
+\subsection{New in release 2.0.10}
 
 This is a documentation-only release. Basically, I'm updating a bunch of the advice I give, based on new experience. The main thing is I'm deprecating the temperature-dependence code, both for computing free energy profiles at a different temperature from the one the simulations were run at, and for analyzing replica exchange. I don't think the code is wrong per se, but it's not particularly reliable, and there are better methods out there (e.g. MBAR).
 
-\section{New in release 2.0.9}
+\subsection{New in release 2.0.9}
 
 The is a bug-fix release; there was a memory allocation error in wham-2d
 that caused a segfault if the number of bins in the 2nd dimension was
 greater than the number of windows.  Caught by Bastien Loubet from the
 Center for Biomembrane Physics in Denmark.
 
-\section{New in release 2.0.8}
+\subsection{New in release 2.0.8}
 
 Major performance improvements to wham-2d (roughly 100x faster).  The final
 answers should be indistinguishable from previous versions.  Code
 contributed by Nikolay Plotnikov from Stanford's Chemistry Department.
 
-\section{New in release 2.0.7}
+\subsection{New in release 2.0.7}
 
 I messed up the ability to switch units from kcal to kJ: in addition to
 defining k\_B in the header files, I also had a define in wham\_2d.c.  Caught
 by Yi Yao of UNC.
 
-\section{New in release 2.0.6}
+\subsection{New in release 2.0.6}
 
 The primary new feature in version 2.0.6 is the ability to exclude regions of a
 2D reaction coordinate from a calculation, which we're calling ``masking''.
@@ -109,7 +114,7 @@ people switch units constantly.  The switch is easy -- before you build the
 code, edit {\tt wham/wham.h} and {\tt wham-2d/wham-2d.h} and change which
 version of the constant {\tt k\_B} is defined.
 
-\section{New in release 2.0.4 and 2.0.5}
+\subsection{New in release 2.0.4 and 2.0.5}
 
 Version 2.0.5 is a trivial patch on 2.0.4, upping the length of lines allowed
 when reading files.
