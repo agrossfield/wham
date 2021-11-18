@@ -1,6 +1,6 @@
 # Linux flags
 CC=gcc
-CFLAGS= -O2 -Wall -W 
+CFLAGS= -O2 -Wall -W
 #Debugging flags
 #CFLAGS= -g  -Wall -W
 LFLAGS= -lm
@@ -40,7 +40,7 @@ depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
 
 clean:
-	rm -f wham driver *.o .*.swp *~
+	rm -f wham driver *.o .*.swp *~ $(NR)/*.o
 
 remake:
 	make clean

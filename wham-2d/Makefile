@@ -33,7 +33,7 @@ depend:
 	makedepend -- $(CFLAGS) -- $(SRCS)
 
 clean:
-	rm -f wham-2d ${OBJS} .*.swp *~
+	rm -f wham-2d ${OBJS} .*.swp *~ $(NR)/*.o
 
 remake:
 	make clean
