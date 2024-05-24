@@ -574,9 +574,9 @@ associated with different values of x as a result of projection.
 
 To make this more concrete, consider a pair of ideal gas particles. There are no
 forces between the particles, so all possible relative positionings of the
-pakpsewhich lwarp.styrticles are equally likely, giving a probability density (and thus a PMF) that
+particles are equally likely, giving a probability density (and thus a PMF) that
 is constant with distance. Alternatively, if one considers the derivation of the
-PMF, where one integrates the ensemble averaged force, it is trivial to
+PMF, where one integrates the ensemble-averaged force, it is trivial to
 establish that the PMF is constant because the force is 0 everywhere.
 
 By contrast, the free energy is \emph{NOT} constant as a function of distance,
@@ -587,8 +587,8 @@ dr$, so equal density everywhere implies that probability increases with
 distance, and as a result the free energy will drop with increasing distance.
 
 Umbrella sampling relies on probability distributions along the chosen
-coordinate, so it produces free energy curves, not PMFs. As far as I can, this
-is true of all enhanced sampling methods, with the exception of adaptive force
+coordinate, so it produces free energy curves, not PMFs. As far as I can tell, this
+is true of all enhanced sampling methods with the exception of adaptive force
 biasing (and free energy perturbation, but this is almost never used for
 anything other than alchemy, where the Jacobian is 1).
 
