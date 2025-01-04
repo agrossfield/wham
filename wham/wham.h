@@ -15,14 +15,16 @@ extern double kT;
 extern int    NUM_BINS;
 extern int    PERIODIC;
 extern double PERIOD;
+extern double k_B;
+
 
 // Some predefined periodic units
 #define DEGREES   360.0
 #define RADIANS   6.28318530717959
 
-#define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
-//#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
-//#define k_B 1.0  // Boltzmann's constant in reduced units
+#define k_B_DEFAULT 0.001982923700 // Boltzmann's constant in kcal/mol K
+//#define k_B_DEFAULT  0.0083144621 // Boltzmann's constant kJ/mol-K
+//#define k_B_DEFAULT 1.0  // Boltzmann's constant in reduced units
 
 
 // global (untrimmed) histogram, global to prevent reallocation

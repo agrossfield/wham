@@ -21,7 +21,7 @@
 #include "wham.h"
 
 
-#define COMMAND_LINE "Command line: wham [P|Ppi|Pval] hist_min hist_max num_bins tol temperature numpad metadatafile freefile [num_MC_trials randSeed]\n"
+#define COMMAND_LINE "Command line: wham [units <real|metal|lj|...>] [P|Ppi|Pval]  hist_min hist_max num_bins tol temperature numpad metadatafile freefile [num_MC_trials randSeed]\n"
 
 double HIST_MAX,HIST_MIN,BIN_WIDTH,TOL;
 double *HISTOGRAM;
@@ -29,6 +29,7 @@ double kT;
 int  NUM_BINS;
 int PERIODIC;
 double PERIOD;
+double k_B = k_B_DEFAULT;
 
 int main(int argc, char *argv[])
 {
@@ -81,6 +82,60 @@ for (i=0; i<argc; i++)
     printf(" %s", argv[i]);
     }
 printf("\n");
+// set k_B according to LAMMPS units settings
+if (strcmp(argv[1],"units") == 0)
+    {
+        if (argc < 3)
+        {
+            printf( COMMAND_LINE );
+            exit(-1);
+        }
+
+        if (strcmp(argv[2], "lj") == 0)
+        {
+            k_B = 1.0;
+        }
+        else if (strcmp(argv[2], "real") == 0)
+        {
+            k_B = 0.0019872067;
+        }
+        else if (strcmp(argv[2], "metal") == 0)
+        {
+            k_B = 8.617343e-5;
+        }
+        else if (strcmp(argv[2], "si") == 0)
+        {
+            k_B = 1.3806504e-23;
+        }
+        else if (strcmp(argv[2], "cgs") == 0)
+        {
+            k_B = 1.3806504e-16;
+        }
+        else if (strcmp(argv[2], "electron") == 0)
+        {
+            k_B = 3.16681534e-6;
+        }
+        else if (strcmp(argv[2], "micro") == 0)
+        {
+            k_B = 1.3806504e-8;
+        }
+        else if (strcmp(argv[2], "nano") == 0)
+        {
+            k_B = 0.013806504;
+        }
+        else if (strcmp(argv[2], "default") == 0)
+        {
+            k_B = k_B_DEFAULT;
+        }
+        else
+        {
+            printf("Unknown unit style: %s\n%s", argv[2], COMMAND_LINE);
+            exit(-1);
+        }
+        printf("# Setting value of k_B to = %.15g\n", k_B);
+        argc -= 2;
+        argv += 2;
+    }
 
 if (toupper(argv[1][0]) == 'P')
     {
@@ -116,6 +171,7 @@ else
     {
     PERIODIC = 0;
     }
+
 
 // Parse command line arguments
 if (argc != 9 && argc !=11)

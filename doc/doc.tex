@@ -56,6 +56,11 @@ Suggestions and patches are welcome.
 Small change to Makefile to correctly clean out the nr/ directory, suggested by
 Lorenzo Rovigatti.
 
+\subsection{New in release 2.1.0}
+Two changes, both contributed by Alex Kohlmeyer. First, we switched from old
+make to CMake for the build. Second, we changed how energy units are set; where
+it used to be a compile-time option, now it is set on the command line.
+
 \subsection{New in release 2.0.11}
 
 Two small changes: I added a quick compile-time option to use reduced energy units (suggested by Trung Dac Nguyen), and I fixed a compile problem on gcc 10 and later.
@@ -144,51 +149,31 @@ of the code changes that went into this release.
 Untarring wham.tgz will create a directory wham/, which in turn contains
 several directories (wham/ wham-2d/ doc/ nr/).
 
-Before you build the code, you need to choose your units for energy.  If you
-want kcal/mol, do nothing.  If you prefer to work in kJ or reduced units
-($k_B=1$), you need to edit 2 files, {\tt wham/wham.h} and {\tt
-wham-2d/wham-2d.h}.  In each case, near the top of the file you'll see a pair of
-lines that look like
+As of version 2.1.0, we've switched to using Cmake for the build, which should
+be simpler than the previous system. To build the code, you should:
 
 \begin{verbatim}
-#define k_B 0.001982923700 // Boltzmann's constant in kcal/mol K
-//#define k_B  0.0083144621 // Boltzmann's constant kJ/mol-K
-//#define k_B 1.0  // Boltzmann's constant in reduced units
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
 \end{verbatim}
 
-To get kJ, you simply remove the ``//'' from the second line and put it before
-the first line, and save the file; uncomment the third line to get reduced
-units.  In principle, you can do just wham or just wham-2d, but I recommend
-against it for your own sanity.
-
-To build the standard 1-D wham code on a machine that has gcc, you should
+This will compile wham and wham-2d, with the intermediate files stored in the
+CMakeFiles directory. You can use the two binaries directly, or install them
+using:
 
 \begin{verbatim}
-    cd wham
-    make clean
-    make
+    cmake --install .
 \end{verbatim}
 
-(which will delete all object files and executables, and build the wham
-executable).  By default, the Makefile uses the gcc compiler, but I also have
-flags present for the Intel compiler, plus the native compilers for Irix and
-Tru64.  The latter two have not been tested recently, but ought to work,
-since at various times this code has been used successfully on various
-flavors of linux, MacOS X, AIX, Irix, and Tru64.  If you find that you need
-to do anything special to make it work on your particular system, I'd
-appreciate it if you could let me know so I can add to the Makefile.
+This will install them in /usr/local/bin. If you want to install them (plus the
+docs) elsewhere, you would run
 
-To build the 2-D version,  say
 
 \begin{verbatim}
-    cd wham-2d
-    make clean
-    make
+    cmake --install . --prefix /my/install/prefix
 \end{verbatim}
-
-Several other directories are also created (doc/, which you presumably found
-because you're reading this, and nr/, which contains a couple of files from
-Numerical Recipes).  You don't need to do anything with these directories.
 
 \section{Command line arguments and file formats}
 
@@ -202,11 +187,26 @@ output file, to help you figure out what you did.
 \subsubsection{Command line arguments for WHAM}
 
 \begin{verbatim}
-wham [P|Ppi|Pval] hist_min hist_max num_bins tol temperature numpad  \
+wham [units <real|metal|lj|...>] [P|Ppi|Pval] hist_min hist_max num_bins tol temperature numpad  \
         metadatafile freefile [num_MC_trials randSeed]
 \end{verbatim}
 
-The first (optional) argument specifies the periodicity of the reaction
+The first optional argument specifies the units used for the reaction
+coordinate. The default is kcal/mol, as before, but now there are other options
+as well, adopted from the units used in LAMMPS.:
+
+\begin{itemize}
+    \item real: kcal/mol
+    \item lj: sets $k_B = 1.0$, so really a reduced unit
+    \item metal
+    \item si 
+    \item cgs 
+    \item electron 
+    \item micro
+    \item nano 
+\end{itemize}
+
+The next (optional) argument specifies the periodicity of the reaction
 coordinate.  For a nonperiodic reaction coordinate (a distance, for
 example), it should be left out.  ``P'' means that the reaction coordinate
 has a periodicity of 360, appropriate for angles. ``Ppi'' specifies a

@@ -6,6 +6,8 @@ doc.toc
 wham-dist.tar.gz
 
 *.o
+*~
 
 wham/wham
 wham-2d/wham-2d
+/build
