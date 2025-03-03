@@ -58,7 +58,7 @@ double sum;
 int iteration;
 int max_iteration = 100000;
 int numpad;
-int **mask;
+int **mask = NULL;
 int use_mask;
 
 cpu1 = ((double) clock())/CLOCKS_PER_SEC;
