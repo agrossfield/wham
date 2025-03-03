@@ -7,7 +7,7 @@
 \begin{center}
 \begin{LARGE}
 {\bf An implementation of WHAM: the Weighted Histogram Analysis Method} \\
-{\bf Version 2.0.10} \\
+{\bf Version 2.1.0} \\
 \vspace*{0.5in}
 {\bf Alan Grossfield} \\
 \end{LARGE}
@@ -51,15 +51,14 @@ would be nice, although again I don't insist upon it.
 
 Suggestions and patches are welcome.
 
-\subsection{New ...}
-
-Small change to Makefile to correctly clean out the nr/ directory, suggested by
-Lorenzo Rovigatti.
 
 \subsection{New in release 2.1.0}
 Two changes, both contributed by Alex Kohlmeyer. First, we switched from old
 make to CMake for the build. Second, we changed how energy units are set; where
 it used to be a compile-time option, now it is set on the command line.
+
+Small change to Makefile to correctly clean out the nr/ directory, suggested by
+Lorenzo Rovigatti.
 
 \subsection{New in release 2.0.11}
 
@@ -193,17 +192,17 @@ wham [units <real|metal|lj|...>] [P|Ppi|Pval] hist_min hist_max num_bins tol tem
 
 The first optional argument specifies the units used for the reaction
 coordinate. The default is kcal/mol, as before, but now there are other options
-as well, adopted from the units used in LAMMPS.:
+as well, adopted from the units used in LAMMPS:
 
 \begin{itemize}
-    \item real: kcal/mol
+    \item real: kcal/mol-Kelvin
     \item lj: sets $k_B = 1.0$, so really a reduced unit
-    \item metal
-    \item si 
-    \item cgs 
-    \item electron 
-    \item micro
-    \item nano 
+    \item metal: eV/Kelvin
+    \item si: Joules/Kelvin 
+    \item cgs: ergs/Kelvin
+    \item electron: Hartrees/Kelvin
+    \item micro: picogram-micrometer$^2$/microsecond$^2$-Kelvin
+    \item nano: attogram-nanometer$^2$/nanosecond$^2$-Kelvin
 \end{itemize}
 
 The next (optional) argument specifies the periodicity of the reaction
@@ -211,7 +210,7 @@ coordinate.  For a nonperiodic reaction coordinate (a distance, for
 example), it should be left out.  ``P'' means that the reaction coordinate
 has a periodicity of 360, appropriate for angles. ``Ppi'' specifies a
 periodicity of 2*pi, appropriate for angles measured in radians.  ``Pval''
-specifies periodicty of some arbitrary amount, val, which should be an
+specifies periodicity of some arbitrary amount, val, which should be an
 integer or floating point number.  For example, ``P180.0'' would be
 appropriate for an angle with twofold symmetry.
 
