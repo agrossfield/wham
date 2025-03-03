@@ -72,39 +72,39 @@ if (strcmp(argv[1],"units") == 0)
             exit(-1);
         }
 
-        if (strcmp(argv[2], "lj") == 0)
+        if (strcmp(argv[2], "lj") == 0)  // reduced units
         {
             k_B = 1.0;
         }
-        else if (strcmp(argv[2], "real") == 0)
+        else if (strcmp(argv[2], "real") == 0) // kcal/mol-K
         {
             k_B = 0.0019872067;
         }
-        else if (strcmp(argv[2], "metal") == 0)
+        else if (strcmp(argv[2], "metal") == 0) // ev/Kelvin
         {
             k_B = 8.617343e-5;
         }
-        else if (strcmp(argv[2], "si") == 0)
+        else if (strcmp(argv[2], "si") == 0) // J/Kelvin
         {
             k_B = 1.3806504e-23;
         }
-        else if (strcmp(argv[2], "cgs") == 0)
+        else if (strcmp(argv[2], "cgs") == 0) // erg/Kelvin
         {
             k_B = 1.3806504e-16;
         }
-        else if (strcmp(argv[2], "electron") == 0)
+        else if (strcmp(argv[2], "electron") == 0) // Hartree/Kelvin
         {
             k_B = 3.16681534e-6;
         }
-        else if (strcmp(argv[2], "micro") == 0)
+        else if (strcmp(argv[2], "micro") == 0) // picogram-micrometer$^2$/microsecond$^2$-Kelvin
         {
             k_B = 1.3806504e-8;
         }
-        else if (strcmp(argv[2], "nano") == 0)
+        else if (strcmp(argv[2], "nano") == 0) // attogram-nanometer$^2$/nanosecond$^2$-Kelvin
         {
             k_B = 0.013806504;
         }
-        else if (strcmp(argv[2], "default") == 0)
+        else if (strcmp(argv[2], "default") == 0) // kcal/mol-kelvin (backward compatible)
         {
             k_B = k_B_DEFAULT;
         }
