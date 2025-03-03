@@ -11,7 +11,7 @@ void locate(double xx[], int n, double x, int *j)
 	ascnd=(xx[n] > xx[0]);  // I think this makes it zero based
 	while (ju-jl > 1) {
 		jm=(ju+jl) >> 1;
-		if (x > xx[jm] == ascnd)
+		if ((x > xx[jm]) == ascnd)
 			jl=jm;
 		else
 			ju=jm;
