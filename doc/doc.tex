@@ -52,6 +52,11 @@ would be nice, although again I don't insist upon it.
 Suggestions and patches are welcome.
 
 
+\subsection{New in release 2.1.1}
+Added support for the "kj" energy unit, which is kJ/mol-Kelvin.  This is the
+default energy unit used in LAMMPS, so this should make it easier to use wham
+with LAMMPS output.  Requested by Agilio Padua.
+
 \subsection{New in release 2.1.0}
 Two changes, both contributed by Alex Kohlmeyer. First, we switched from old
 make to CMake for the build. Second, we changed how energy units are set; where
@@ -203,6 +208,7 @@ as well, adopted from the units used in LAMMPS:
     \item electron: Hartrees/Kelvin
     \item micro: picogram-micrometer$^2$/microsecond$^2$-Kelvin
     \item nano: attogram-nanometer$^2$/nanosecond$^2$-Kelvin
+    \item kj: kJ/mol-Kelvin
 \end{itemize}
 
 The next (optional) argument specifies the periodicity of the reaction

@@ -104,6 +104,10 @@ if (strcmp(argv[1],"units") == 0)
         {
             k_B = 0.013806504;
         }
+        else if (strcmp(argv[2], "kj") == 0) // kJ/mol-Kelvin
+        {
+            k_B = 8.31446261815324 / 1000.0;
+        }
         else if (strcmp(argv[2], "default") == 0) // kcal/mol-kelvin (backward compatible)
         {
             k_B = k_B_DEFAULT;
